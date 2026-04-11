@@ -14,12 +14,10 @@ type Props = {
 }
 
 export function ContinueWatchingCard({ item }: Props) {
-    const router = useRouter()
-    const { theme } = useUniwind()
-    const isDark = theme === 'dark'
-    const colors = isDark ? appTheme.colors.dark : appTheme.colors.light
-    const textColor = isDark ? '#FFFFFF' : '#0F172A'
-    const textMuted = isDark ? '#94A3B8' : '#64748B'
+    const router = useRouter();
+    const { theme } = useUniwind();
+    const isDark = theme === 'dark';
+    const colors = isDark ? appTheme.colors.dark : appTheme.colors.light;
 
     return (
         <Pressable

@@ -1,10 +1,9 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import { DetailScreen } from '@/features/detail/components/detail-screen';
+import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
 
 export default function AnimeDetailScreen() {
-    return (
-        <View className='flex-1 bg-background'>
-            <Text className='text-white'>Anime Detail</Text>
-        </View>
-    )
+    const { id } = useLocalSearchParams<{ id: string }>();
+
+    return <DetailScreen id={id ?? '1'} />
 }

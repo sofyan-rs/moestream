@@ -1,8 +1,8 @@
+import StarIcon from '@/components/icons/star'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { Star } from 'react-native-solar-icons/icons/bold'
 import { type SearchAnime } from '../data/search-dummy-data'
 
 // const CARD_W = 110
@@ -28,7 +28,7 @@ export function AnimeGridCard({ item }: Props) {
             </View>
 
             <View className="flex-row items-center gap-1 mt-2">
-                <Star size={10} color="#FF2D55" />
+                <StarIcon size={10} color="#FF2D55" />
                 <Text className="text-accent font-normal" style={{ fontSize: 10 }}>
                     {item.rating}
                 </Text>

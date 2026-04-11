@@ -6,6 +6,7 @@ export const appTheme = {
       background: "#F1F5F9",
       surface: "#FFFFFF",
       text: "#0F172A",
+      textMuted: "#94A3B8",
     },
     dark: {
       primary: "#FF2D55", // Cursed Red

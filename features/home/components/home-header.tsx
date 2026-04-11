@@ -5,9 +5,9 @@ import { Bell } from 'react-native-solar-icons/icons/bold'
 import { useUniwind } from 'uniwind'
 
 export function HomeHeader() {
-    const { theme } = useUniwind()
-    const isDark = theme === 'dark'
-    const textColor = isDark ? '#FFFFFF' : '#0F172A'
+    const { theme } = useUniwind();
+    const isDark = theme === 'dark';
+    const textColor = isDark ? '#FFFFFF' : '#0F172A';
 
     return (
         <View className="flex-row items-center justify-between p-4">

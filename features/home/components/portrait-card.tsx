@@ -1,8 +1,8 @@
+import StarIcon from '@/components/icons/star'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { Star } from 'react-native-solar-icons/icons/bold'
 
 const CARD_W = 118
 
@@ -46,7 +46,7 @@ export function PortraitCard({ item, showRating, showBadge }: Props) {
             {/* Rating row */}
             {showRating && item.rating != null && (
                 <View className="flex-row items-center gap-1 mt-2">
-                    <Star size={11} color="#FF2D55" />
+                    <StarIcon size={11} color="#FF2D55" />
                     <Text className='font-normal text-accent' style={{ fontSize: 10 }}>
                         {item.rating}
                     </Text>

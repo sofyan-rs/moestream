@@ -15,7 +15,7 @@ export default function AnimeLayout() {
             {/* URL: /anime/[id] */}
             <Stack.Screen
                 name="index"
-                options={{ title: 'Anime Detail' }}
+                options={{ headerShown: false }}
             />
             {/* URL: /anime/[id]/episode/[episode] */}
             <Stack.Screen
