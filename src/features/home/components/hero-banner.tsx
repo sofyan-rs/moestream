@@ -1,20 +1,20 @@
-import { appTheme } from '@/constants/app-theme'
-import { Image } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useRouter } from 'expo-router'
-import { Button, Chip } from 'heroui-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, Text, View } from 'react-native'
-import { Bookmark, ClapperboardPlay, Play } from 'react-native-solar-icons/icons/bold'
-import { useUniwind } from 'uniwind'
-import { type FeaturedAnime } from '../data/home-dummy-data'
+import { appTheme } from '@/src/constants/app-theme';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { Button, Chip } from 'heroui-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, Text, View } from 'react-native';
+import { Bookmark, ClapperboardPlay, Play } from 'react-native-solar-icons/icons/bold';
+import { useUniwind } from 'uniwind';
+import { type FeaturedAnime } from '../data/home-dummy-data';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window')
-const SLIDE_MARGIN = 0
-const SLIDE_WIDTH = SCREEN_WIDTH - SLIDE_MARGIN * 2
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SLIDE_MARGIN = 0;
+const SLIDE_WIDTH = SCREEN_WIDTH - SLIDE_MARGIN * 2;
 
 type Props = {
-    items: FeaturedAnime[]
+    items: FeaturedAnime[];
 }
 
 export function HeroBanner({ items }: Props) {

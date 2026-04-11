@@ -1,4 +1,4 @@
-import { appTheme } from '@/constants/app-theme'
+import { appTheme } from '@/src/constants/app-theme'
 import React from 'react'
 import { Text, View } from 'react-native'
 import { Magnifer } from 'react-native-solar-icons/icons/outline'

@@ -1,17 +1,17 @@
-import { appTheme } from '@/constants/app-theme'
-import { Button } from 'heroui-native'
-import React from 'react'
-import { Text, View } from 'react-native'
-import { Bookmark, Play } from 'react-native-solar-icons/icons/bold'
-import { Bookmark as BookmarkOutline, DownloadMinimalistic } from 'react-native-solar-icons/icons/linear'
-import { useUniwind } from 'uniwind'
-import { type AnimeDetail } from '../data/detail-dummy-data'
+import { appTheme } from '@/src/constants/app-theme';
+import { Button } from 'heroui-native';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { Bookmark, Play } from 'react-native-solar-icons/icons/bold';
+import { Bookmark as BookmarkOutline, DownloadMinimalistic } from 'react-native-solar-icons/icons/linear';
+import { useUniwind } from 'uniwind';
+import { type AnimeDetail } from '../data/detail-dummy-data';
 
 type Props = {
-    anime: AnimeDetail
-    bookmarked: boolean
-    onToggleBookmark: () => void
-    onPlay: () => void
+    anime: AnimeDetail;
+    bookmarked: boolean;
+    onToggleBookmark: () => void;
+    onPlay: () => void;
 }
 
 export function DetailInfo({ anime, bookmarked, onToggleBookmark, onPlay }: Props) {
@@ -56,5 +56,5 @@ export function DetailInfo({ anime, bookmarked, onToggleBookmark, onPlay }: Prop
                 </Button>
             </View>
         </View>
-    )
+    );
 }

@@ -1,16 +1,16 @@
-import StarIcon from '@/components/icons/star'
-import { appTheme } from '@/constants/app-theme'
-import { Card, Separator } from 'heroui-native'
-import React from 'react'
-import { Text, View } from 'react-native'
-import { Calendar, ClockCircle, Home2, Playlist, Tv } from 'react-native-solar-icons/icons/bold'
-import { useUniwind } from 'uniwind'
-import { type AnimeDetail } from '../data/detail-dummy-data'
+import StarIcon from '@/src/components/icons/star';
+import { appTheme } from '@/src/constants/app-theme';
+import { Card, Separator } from 'heroui-native';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { Calendar, ClockCircle, Home2, Playlist, Tv } from 'react-native-solar-icons/icons/bold';
+import { useUniwind } from 'uniwind';
+import { type AnimeDetail } from '../data/detail-dummy-data';
 
 type StatItemProps = {
-    icon: React.ReactNode
-    label: string
-    value: string
+    icon: React.ReactNode;
+    label: string;
+    value: string;
 }
 
 function StatItem({ icon, label, value }: StatItemProps) {
@@ -20,11 +20,11 @@ function StatItem({ icon, label, value }: StatItemProps) {
             <Text className="text-accent text-sm font-bold">{value}</Text>
             <Text className="text-foreground font-normal text-xs mt-0.5">{label}</Text>
         </View>
-    )
+    );
 }
 
 type Props = {
-    anime: AnimeDetail
+    anime: AnimeDetail;
 }
 
 export function DetailStats({ anime }: Props) {
@@ -82,5 +82,5 @@ export function DetailStats({ anime }: Props) {
             </Card>
         </View>
 
-    )
+    );
 }

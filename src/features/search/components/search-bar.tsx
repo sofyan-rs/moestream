@@ -1,4 +1,4 @@
-import { appTheme } from '@/constants/app-theme';
+import { appTheme } from '@/src/constants/app-theme';
 import { InputGroup } from 'heroui-native';
 import React from 'react';
 import { View } from 'react-native';

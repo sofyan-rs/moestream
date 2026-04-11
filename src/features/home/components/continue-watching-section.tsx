@@ -1,8 +1,8 @@
-import React from 'react'
-import { FlatList, View } from 'react-native'
-import { CONTINUE_WATCHING, type ContinueWatchingItem } from '../data/home-dummy-data'
-import { ContinueWatchingCard } from './continue-watching-card'
-import { SectionHeader } from './section-header'
+import React from 'react';
+import { FlatList, View } from 'react-native';
+import { CONTINUE_WATCHING, type ContinueWatchingItem } from '../data/home-dummy-data';
+import { ContinueWatchingCard } from './continue-watching-card';
+import { SectionHeader } from './section-header';
 
 export function ContinueWatchingSection() {
     return (

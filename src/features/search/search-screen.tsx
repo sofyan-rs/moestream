@@ -1,26 +1,26 @@
-import React, { useMemo, useState } from 'react'
-import { FlatList, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { GENRES, SEARCH_RESULTS } from '../data/search-dummy-data'
-import { AnimeGridCard } from './anime-grid-card'
-import { GenreFilter } from './genre-filter'
-import { SearchBar } from './search-bar'
-import { SearchEmptyState } from './search-empty-state'
+import React, { useMemo, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AnimeGridCard } from './components/anime-grid-card';
+import { GenreFilter } from './components/genre-filter';
+import { SearchBar } from './components/search-bar';
+import { SearchEmptyState } from './components/search-empty-state';
+import { GENRES, SEARCH_RESULTS } from './data/search-dummy-data';
 
 export function SearchScreen() {
     const { top } = useSafeAreaInsets();
-    const [query, setQuery] = useState('')
-    const [selectedGenre, setSelectedGenre] = useState('All')
+    const [query, setQuery] = useState('');
+    const [selectedGenre, setSelectedGenre] = useState('All');
 
     const filtered = useMemo(() => {
-        const q = query.trim().toLowerCase()
+        const q = query.trim().toLowerCase();
         return SEARCH_RESULTS.filter(anime => {
-            const matchesQuery = q.length === 0 || anime.title.toLowerCase().includes(q)
+            const matchesQuery = q.length === 0 || anime.title.toLowerCase().includes(q);
             const matchesGenre =
-                selectedGenre === 'All' || anime.genres.includes(selectedGenre)
-            return matchesQuery && matchesGenre
+                selectedGenre === 'All' || anime.genres.includes(selectedGenre);
+            return matchesQuery && matchesGenre;
         })
-    }, [query, selectedGenre])
+    }, [query, selectedGenre]);
 
     return (
         <View className="flex-1 bg-background" style={{ paddingTop: top }}>

@@ -1,23 +1,23 @@
-import { appTheme } from '@/constants/app-theme'
-import { Image } from 'expo-image'
-import { useRouter } from 'expo-router'
-import { PressableFeedback, Separator } from 'heroui-native'
-import React from 'react'
-import { Text, View } from 'react-native'
-import { Play } from 'react-native-solar-icons/icons/bold'
-import { PlayCircle } from 'react-native-solar-icons/icons/linear'
-import { useUniwind } from 'uniwind'
-import { type AnimeDetail, type AnimeEpisode } from '../data/detail-dummy-data'
+import { appTheme } from '@/src/constants/app-theme';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import { PressableFeedback, Separator } from 'heroui-native';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { Play } from 'react-native-solar-icons/icons/bold';
+import { PlayCircle } from 'react-native-solar-icons/icons/linear';
+import { useUniwind } from 'uniwind';
+import { type AnimeDetail, type AnimeEpisode } from '../data/detail-dummy-data';
 
 type EpisodeItemProps = {
-    episode: AnimeEpisode
-    animeId: string
+    episode: AnimeEpisode;
+    animeId: string;
 }
 
 function EpisodeItem({ episode, animeId }: EpisodeItemProps) {
-    const router = useRouter()
-    const { theme } = useUniwind()
-    const accent = theme === 'dark' ? appTheme.colors.dark.primary : appTheme.colors.light.primary
+    const router = useRouter();
+    const { theme } = useUniwind();
+    const accent = theme === 'dark' ? appTheme.colors.dark.primary : appTheme.colors.light.primary;
 
     return (
         <PressableFeedback
@@ -53,16 +53,16 @@ function EpisodeItem({ episode, animeId }: EpisodeItemProps) {
 
             <PlayCircle size={22} color={accent} />
         </PressableFeedback>
-    )
+    );
 }
 
 type Props = {
-    anime: AnimeDetail
+    anime: AnimeDetail;
 }
 
 export function EpisodeList({ anime }: Props) {
-    const { theme } = useUniwind()
-    const accent = theme === 'dark' ? appTheme.colors.dark.primary : appTheme.colors.light.primary
+    const { theme } = useUniwind();
+    const accent = theme === 'dark' ? appTheme.colors.dark.primary : appTheme.colors.light.primary;
 
     return (
         <View className="mt-2 pb-8">
@@ -93,5 +93,5 @@ export function EpisodeList({ anime }: Props) {
                 ))
             }
         </View >
-    )
+    );
 }

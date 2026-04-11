@@ -1,29 +1,29 @@
-import { useRouter } from 'expo-router'
-import React, { useState } from 'react'
-import { ScrollView, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { getAnimeDetail } from '../data/detail-dummy-data'
-import { DetailCover } from './detail-cover'
-import { DetailInfo } from './detail-info'
-import { DetailStats } from './detail-stats'
-import { DetailSynopsis } from './detail-synopsis'
-import { EpisodeList } from './episode-list'
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DetailCover } from './components/detail-cover';
+import { DetailInfo } from './components/detail-info';
+import { DetailStats } from './components/detail-stats';
+import { DetailSynopsis } from './components/detail-synopsis';
+import { EpisodeList } from './components/episode-list';
+import { getAnimeDetail } from './data/detail-dummy-data';
 
 type Props = {
-    id: string
+    id: string;
 }
 
 export function DetailScreen({ id }: Props) {
     const { top } = useSafeAreaInsets();
-    const router = useRouter()
-    const anime = getAnimeDetail(id)
-    const [bookmarked, setBookmarked] = useState(false)
+    const router = useRouter();
+    const anime = getAnimeDetail(id);
+    const [bookmarked, setBookmarked] = useState(false);
 
     const handlePlay = () => {
         if (anime.episodes.length > 0) {
-            router.push(`/anime/${id}/episode/${anime.episodes[0].number}`)
+            router.push(`/anime/${id}/episode/${anime.episodes[0].number}`);
         }
-    }
+    };
 
     return (
         <View className="flex-1 bg-background" style={{ paddingTop: top }}>
@@ -48,5 +48,5 @@ export function DetailScreen({ id }: Props) {
                 <View className='h-20' />
             </ScrollView>
         </View>
-    )
+    );
 }

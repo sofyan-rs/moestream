@@ -1,22 +1,22 @@
-import { Image } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useRouter } from 'expo-router'
-import { Button } from 'heroui-native'
-import React from 'react'
-import { Dimensions, Text, View } from 'react-native'
-import { Play } from 'react-native-solar-icons/icons/bold'
-import { ArrowLeft } from 'react-native-solar-icons/icons/outline'
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { Button } from 'heroui-native';
+import React from 'react';
+import { Dimensions, Text, View } from 'react-native';
+import { Play } from 'react-native-solar-icons/icons/bold';
+import { ArrowLeft } from 'react-native-solar-icons/icons/outline';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window')
-const COVER_HEIGHT = SCREEN_WIDTH * 0.65
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const COVER_HEIGHT = SCREEN_WIDTH * 0.65;
 
 type Props = {
-    cover: string
-    onPlay?: () => void
+    cover: string;
+    onPlay?: () => void;
 }
 
 export function DetailCover({ cover, onPlay }: Props) {
-    const router = useRouter()
+    const router = useRouter();
 
     return (
         <View style={{ height: COVER_HEIGHT }}>
@@ -60,5 +60,5 @@ export function DetailCover({ cover, onPlay }: Props) {
                 </Text>
             </View>
         </View>
-    )
+    );
 }

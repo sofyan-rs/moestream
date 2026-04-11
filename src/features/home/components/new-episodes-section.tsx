@@ -1,8 +1,8 @@
-import React from 'react'
-import { FlatList, View } from 'react-native'
-import { NEW_EPISODES, type NewEpisodeAnime } from '../data/home-dummy-data'
-import { PortraitCard } from './portrait-card'
-import { SectionHeader } from './section-header'
+import React from 'react';
+import { FlatList, View } from 'react-native';
+import { NEW_EPISODES, type NewEpisodeAnime } from '../data/home-dummy-data';
+import { PortraitCard } from './portrait-card';
+import { SectionHeader } from './section-header';
 
 export function NewEpisodesSection() {
     return (

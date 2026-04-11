@@ -1,4 +1,4 @@
-import { appTheme } from '@/constants/app-theme';
+import { appTheme } from '@/src/constants/app-theme';
 import { Stack } from 'expo-router';
 import { useUniwind } from 'uniwind';
 

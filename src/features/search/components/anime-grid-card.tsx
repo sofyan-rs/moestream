@@ -1,18 +1,18 @@
-import StarIcon from '@/components/icons/star'
-import { Image } from 'expo-image'
-import { useRouter } from 'expo-router'
-import React from 'react'
-import { Pressable, Text, View } from 'react-native'
-import { type SearchAnime } from '../data/search-dummy-data'
+import StarIcon from '@/src/components/icons/star';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { type SearchAnime } from '../data/search-dummy-data';
 
 // const CARD_W = 110
 
 type Props = {
-    item: SearchAnime
+    item: SearchAnime;
 }
 
 export function AnimeGridCard({ item }: Props) {
-    const router = useRouter()
+    const router = useRouter();
 
     return (
         <Pressable

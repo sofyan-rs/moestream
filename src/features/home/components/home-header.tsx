@@ -1,8 +1,8 @@
-import { Button } from 'heroui-native'
-import React from 'react'
-import { Text, View } from 'react-native'
-import { Bell } from 'react-native-solar-icons/icons/bold'
-import { useUniwind } from 'uniwind'
+import { Button } from 'heroui-native';
+import React from 'react';
+import { Text, View } from 'react-native';
+import { Bell } from 'react-native-solar-icons/icons/bold';
+import { useUniwind } from 'uniwind';
 
 export function HomeHeader() {
     const { theme } = useUniwind();

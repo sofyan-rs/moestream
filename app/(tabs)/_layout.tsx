@@ -1,5 +1,5 @@
-import { AnimatedTabButton } from '@/components/tab-bar/animated-tab-button';
-import { appTheme } from '@/constants/app-theme';
+import { AnimatedTabButton } from '@/src/components/tab-bar/animated-tab-button';
+import { appTheme } from '@/src/constants/app-theme';
 import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Bookmark as BookmarkBold, Home as HomeBold, Magnifer as MagniferBold, Settings as SettingsBold } from "react-native-solar-icons/icons/bold-duotone";

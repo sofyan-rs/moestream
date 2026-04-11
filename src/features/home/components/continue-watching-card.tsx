@@ -1,16 +1,16 @@
-import { appTheme } from '@/constants/app-theme'
-import { Image } from 'expo-image'
-import { useRouter } from 'expo-router'
-import React from 'react'
-import { Dimensions, Pressable, Text, View } from 'react-native'
-import { Play } from 'react-native-solar-icons/icons/bold'
-import { useUniwind } from 'uniwind'
-import { type ContinueWatchingItem } from '../data/home-dummy-data'
+import { appTheme } from '@/src/constants/app-theme';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Dimensions, Pressable, Text, View } from 'react-native';
+import { Play } from 'react-native-solar-icons/icons/bold';
+import { useUniwind } from 'uniwind';
+import { type ContinueWatchingItem } from '../data/home-dummy-data';
 
-const CARD_W = Dimensions.get('window').width * 0.56
+const CARD_W = Dimensions.get('window').width * 0.56;
 
 type Props = {
-    item: ContinueWatchingItem
+    item: ContinueWatchingItem;
 }
 
 export function ContinueWatchingCard({ item }: Props) {

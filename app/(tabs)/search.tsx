@@ -1,6 +1,8 @@
-import { SearchScreen } from '@/features/search/components/search-screen'
-import React from 'react'
+import { SearchScreen } from '@/src/features/search/search-screen';
+import React from 'react';
 
-export default function SearchTab() {
-    return <SearchScreen />
+export default function SearchPage() {
+    return (
+        <SearchScreen />
+    )
 }

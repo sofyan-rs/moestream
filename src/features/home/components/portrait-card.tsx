@@ -1,22 +1,22 @@
-import StarIcon from '@/components/icons/star'
-import { Image } from 'expo-image'
-import { useRouter } from 'expo-router'
-import React from 'react'
-import { Pressable, Text, View } from 'react-native'
+import StarIcon from '@/src/components/icons/star';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
 
-const CARD_W = 118
+const CARD_W = 118;
 
 type Props = {
     item: {
-        id: string
-        title: string
-        cover: string
-        rating?: number
-        episode?: string
-        timeAgo?: string
+        id: string;
+        title: string;
+        cover: string;
+        rating?: number;
+        episode?: string;
+        timeAgo?: string;
     }
-    showRating?: boolean
-    showBadge?: boolean
+    showRating?: boolean;
+    showBadge?: boolean;
 }
 
 export function PortraitCard({ item, showRating, showBadge }: Props) {
