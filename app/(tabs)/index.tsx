@@ -18,7 +18,7 @@ export default function HomeScreen() {
             <ContinueWatchingSection />
             <TrendingSection />
             <NewEpisodesSection />
-            <View className="h-6" />
+            <View className="h-10" />
         </ScrollView>
     )
 }

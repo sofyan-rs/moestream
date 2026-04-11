@@ -75,7 +75,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="watchlist"
         options={{
-          title: 'Watch List',
+          title: 'Watchlist',
           tabBarIcon: ({ color, size, focused }) => focused
             ? <BookmarkBold size={size} color={color} />
             : <BookmarkLine size={size} color={color} />,

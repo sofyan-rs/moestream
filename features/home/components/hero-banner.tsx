@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import { Button, Chip } from 'heroui-native'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, Text, View } from 'react-native'
 import { Bookmark, ClapperboardPlay, Play } from 'react-native-solar-icons/icons/bold'
 import { useUniwind } from 'uniwind'
@@ -25,12 +25,49 @@ export function HeroBanner({ items }: Props) {
     const scrollRef = useRef<ScrollView>(null);
 
     const accentColor = isDark ? appTheme.colors.dark.primary : appTheme.colors.light.primary;
+    const isUserScrolling = useRef(false);
+    const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    const scrollToIndex = useCallback((index: number) => {
+        scrollRef.current?.scrollTo({ x: index * SLIDE_WIDTH, animated: true });
+        setActiveIndex(index);
+    }, []);
+
+    const startAutoPlay = useCallback(() => {
+        if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+        autoPlayRef.current = setInterval(() => {
+            if (!isUserScrolling.current) {
+                setActiveIndex(prev => {
+                    const next = (prev + 1) % items.length;
+                    scrollRef.current?.scrollTo({ x: next * SLIDE_WIDTH, animated: true });
+                    return next;
+                });
+            }
+        }, 3500);
+    }, [items.length]);
+
+    useEffect(() => {
+        startAutoPlay();
+        return () => {
+            if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+        };
+    }, [startAutoPlay]);
 
     const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
         const x = e.nativeEvent.contentOffset.x;
         const index = Math.round(x / SLIDE_WIDTH);
         setActiveIndex(index);
-    }
+    };
+
+    const handleScrollBegin = () => {
+        isUserScrolling.current = true;
+        if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    };
+
+    const handleScrollEnd = () => {
+        isUserScrolling.current = false;
+        startAutoPlay();
+    };
 
     return (
         <View className="">
@@ -44,6 +81,8 @@ export function HeroBanner({ items }: Props) {
                 contentContainerStyle={{ paddingHorizontal: SLIDE_MARGIN }}
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
+                onScrollBeginDrag={handleScrollBegin}
+                onMomentumScrollEnd={handleScrollEnd}
             >
                 {items.map((anime, index) => (
                     <View
@@ -143,15 +182,20 @@ export function HeroBanner({ items }: Props) {
             {/* Pagination dots */}
             <View className="flex-row justify-center items-center gap-1.5 mt-3 p-5">
                 {items.map((_, index) => (
-                    <View
+                    <Pressable
                         key={index}
-                        style={{
-                            width: activeIndex === index ? 18 : 6,
-                            height: 6,
-                            borderRadius: 3,
-                            backgroundColor: activeIndex === index ? '#FF2D55' : (isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'),
-                        }}
-                    />
+                        onPress={() => scrollToIndex(index)}
+                        hitSlop={8}
+                    >
+                        <View
+                            style={{
+                                width: activeIndex === index ? 18 : 6,
+                                height: 6,
+                                borderRadius: 3,
+                                backgroundColor: activeIndex === index ? '#FF2D55' : (isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'),
+                            }}
+                        />
+                    </Pressable>
                 ))}
             </View>
         </View>
