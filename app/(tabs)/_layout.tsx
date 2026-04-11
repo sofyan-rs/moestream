@@ -69,7 +69,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => focused
             ? <MagniferBold size={size} color={color} />
             : <MagniferLine size={size} color={color} />,
-          // headerShown: false,
+          headerShown: false,
         }}
       />
       <Tabs.Screen

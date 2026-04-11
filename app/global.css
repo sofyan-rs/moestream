@@ -23,5 +23,10 @@
     --accent: #ff2d55;
     --background: #161b33;
     --surface: #090e23;
+
+    --field-background: #080e24;
+    --field-foreground: #ffffff;
+    --field-placeholder: #94a3b8;
+    --field-border: transparent;
   }
 }
