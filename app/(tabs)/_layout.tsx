@@ -1,33 +1,95 @@
+import { AnimatedTabButton } from '@/components/tab-bar/animated-tab-button';
+import { appTheme } from '@/constants/app-theme';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Bookmark as BookmarkBold, Home as HomeBold, Magnifer as MagniferBold, Settings as SettingsBold } from "react-native-solar-icons/icons/bold-duotone";
+import { Bookmark as BookmarkLine, Home as HomeLine, Magnifer as MagniferLine, Settings as SettingsLine } from "react-native-solar-icons/icons/outline";
+import { useUniwind } from 'uniwind';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+const TAB_BAR_HEIGHT = 65;
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { bottom } = useSafeAreaInsets();
+  const { theme } = useUniwind();
+
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    <Tabs screenOptions={{
+      tabBarActiveTintColor: theme === 'light' ? appTheme.colors.light.primary : appTheme.colors.dark.primary,
+      tabBarActiveBackgroundColor: theme === 'light' ? appTheme.colors.light.primaryLight : appTheme.colors.dark.primaryLight,
+      tabBarStyle: {
+        backgroundColor: theme === 'light' ? appTheme.colors.light.surface : appTheme.colors.dark.surface,
+        height: TAB_BAR_HEIGHT + bottom,
+        paddingTop: 5,
+        paddingBottom: bottom,
+        paddingHorizontal: 5,
+        borderTopWidth: 0,
+        borderTopColor: theme === 'light' ? appTheme.colors.light.primary : appTheme.colors.dark.primary,
+        elevation: 0,
+      },
+      tabBarLabelStyle: {
+        fontFamily: 'Montserrat_600SemiBold',
+        fontSize: 9,
+        textTransform: 'uppercase',
+      },
+      tabBarItemStyle: {
+        borderRadius: 100,
+        overflow: 'hidden',
+        margin: 5,
+      },
+      tabBarButton: ({ children, style, onPress, onLongPress, accessibilityState }) => (
+        <AnimatedTabButton
+          focused={accessibilityState?.selected ?? false}
+          style={style}
+          onPress={onPress}
+          onLongPress={onLongPress}
+        >
+          {children}
+        </AnimatedTabButton>
+      ),
+      headerTitleStyle: { fontFamily: 'Montserrat_600SemiBold' },
+      headerTintColor: theme === 'light' ? appTheme.colors.light.text : appTheme.colors.dark.text,
+      headerStyle: { backgroundColor: theme === 'light' ? appTheme.colors.light.surface : appTheme.colors.dark.surface },
+      headerShadowVisible: false,
+    }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, size, focused }) => focused
+            ? <HomeBold size={size} color={color} />
+            : <HomeLine size={size} color={color} />,
+          // headerShown: false,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="search"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Search',
+          tabBarIcon: ({ color, size, focused }) => focused
+            ? <MagniferBold size={size} color={color} />
+            : <MagniferLine size={size} color={color} />,
+          // headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="watchlist"
+        options={{
+          title: 'Watch List',
+          tabBarIcon: ({ color, size, focused }) => focused
+            ? <BookmarkBold size={size} color={color} />
+            : <BookmarkLine size={size} color={color} />,
+          // headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color, size, focused }) => focused
+            ? <SettingsBold size={size} color={color} />
+            : <SettingsLine size={size} color={color} />,
+          // headerShown: false,
         }}
       />
     </Tabs>

@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "uniwind";
+
+@import "heroui-native/styles";
+
+@source '../node_modules/heroui-native/lib';
+
+@theme {
+  --font-normal: "Montserrat_400Regular";
+  --font-medium: "Montserrat_500Medium";
+  --font-semibold: "Montserrat_600SemiBold";
+  --font-bold: "Montserrat_700Bold";
+}
+
+@layer theme {
+  @variant light {
+    --accent: #ff2d55;
+    --background: #f1f5f9;
+    --surface: #ffffff;
+  }
+
+  @variant dark {
+    --accent: #ff2d55;
+    --background: #161b33;
+    --surface: #090e23;
+  }
+}
