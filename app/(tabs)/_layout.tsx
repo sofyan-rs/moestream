@@ -59,7 +59,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => focused
             ? <HomeBold size={size} color={color} />
             : <HomeLine size={size} color={color} />,
-          // headerShown: false,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
