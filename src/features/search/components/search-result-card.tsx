@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { PressableFeedback } from 'heroui-native';
 import React from 'react';
 import { Text, View } from 'react-native';
+import { cn } from 'tailwind-variants';
 import { useUniwind } from 'uniwind';
 
 const THUMB_W = 90;
@@ -45,28 +46,35 @@ export function SearchResultCard({ item }: Props) {
                     {item.title}
                 </Text>
 
-                {rating !== null && !isNaN(rating) && (
-                    <View className="flex-row items-center gap-1">
-                        <StarIcon size={14} color={appTheme.colors.light.primary} />
-                        <Text className="text-xs font-medium text-accent">
-                            {rating.toFixed(1)}
-                        </Text>
-                    </View>
-                )}
+                <View className="flex-row items-center gap-2">
+                    {item.status ? (
+                        <View className={
+                            cn('rounded-md px-2 py-0.5 self-start overflow-hidden',
+                                item.status === 'Ongoing' ? 'bg-accent' : 'bg-surface'
+                            )
+                        }>
+                            <Text className={
+                                cn('text-foreground font-semibold', item.status === 'Ongoing' ? 'text-white' : 'text-foreground')
+                            } style={{ fontSize: 10 }}>
+                                {item.status}
+                            </Text>
+                        </View>
+                    ) : null}
+                    {rating !== null && !isNaN(rating) && (
+                        <View className="flex-row items-center gap-1">
+                            <StarIcon size={14} color={appTheme.colors.light.primary} />
+                            <Text className="text-xs font-medium text-accent">
+                                {rating.toFixed(1)}
+                            </Text>
+                        </View>
+                    )}
+                </View>
 
                 {item.genres.length > 0 && (
                     <Text className="text-xs text-foreground font-normal" numberOfLines={1} style={{ color: iconColor }}>
                         {item.genres.join(' · ')}
                     </Text>
                 )}
-
-                {item.status ? (
-                    <View className="bg-surface rounded-md px-2 py-0.5 self-start">
-                        <Text className="text-foreground font-semibold" style={{ fontSize: 10 }}>
-                            {item.status}
-                        </Text>
-                    </View>
-                ) : null}
             </View>
         </PressableFeedback>
     );

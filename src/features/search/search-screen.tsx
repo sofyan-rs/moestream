@@ -1,8 +1,9 @@
 import LoadingSpinner from '@/src/components/loading/loading-spinner';
+import { appTheme } from '@/src/constants/app-theme';
 import { getSearch, type TSearchData } from '@/src/services/api/search';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // import { AnimeGridCard } from './components/anime-grid-card';
 // import { GenreFilter } from './components/genre-filter';
@@ -22,7 +23,7 @@ export function SearchScreen() {
         return () => clearTimeout(timer);
     }, [query]);
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isRefetching, refetch } = useQuery({
         queryKey: ['search', debouncedQuery],
         queryFn: () => getSearch({ query: debouncedQuery }),
         enabled: debouncedQuery.length > 0,
@@ -52,10 +53,17 @@ export function SearchScreen() {
                     keyExtractor={item => item.endpoint}
                     renderItem={({ item }) => <SearchResultCard item={item} />}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 32 }}
+                    contentContainerStyle={{ paddingBottom: 10 }}
                     ItemSeparatorComponent={() => (
                         <View className="mx-5 border-b border-border opacity-50" />
                     )}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefetching}
+                            onRefresh={refetch}
+                            colors={[appTheme.colors.light.primary]}
+                        />
+                    }
                 />
             ) : (
                 <SearchEmptyState variant="no-results" />
