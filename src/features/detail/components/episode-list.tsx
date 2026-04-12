@@ -3,10 +3,10 @@ import { type TEpisode } from '@/src/services/api/detail';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { PressableFeedback, Separator } from 'heroui-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Play } from 'react-native-solar-icons/icons/bold';
-import { PlayCircle } from 'react-native-solar-icons/icons/linear';
+import { PlayCircle, SortFromBottomToTop, SortFromTopToBottom } from 'react-native-solar-icons/icons/linear';
 import { useUniwind } from 'uniwind';
 
 type EpisodeItemProps = {
@@ -53,7 +53,6 @@ function EpisodeItem({ episode, index, animeId, thumb }: EpisodeItemProps) {
                     {episode.episode_date}
                 </Text>
             </View>
-
             <PlayCircle size={22} color={accent} />
         </PressableFeedback>
     );
@@ -61,16 +60,26 @@ function EpisodeItem({ episode, index, animeId, thumb }: EpisodeItemProps) {
 
 type Props = {
     episodes: TEpisode[];
-    totalEps: string;
+    // totalEps: string;
     endpoint: string;
     thumb: string;
 }
 
-export function EpisodeList({ episodes, totalEps, endpoint, thumb }: Props) {
+export function EpisodeList({ episodes, endpoint, thumb }: Props) {
     const { theme } = useUniwind();
     const accent = theme === 'dark' ? appTheme.colors.dark.primary : appTheme.colors.light.primary;
+    const [sortAsc, setSortAsc] = useState(false);
 
-    const filteredEpisodes = episodes.filter(ep => ep.type === 'episode');
+    const filteredEpisodes = episodes
+        .filter(ep => ep.type === 'episode')
+        .slice()
+        .sort((a, b) => {
+            const numA = a.episode_number ? parseFloat(a.episode_number) : 0;
+            const numB = b.episode_number ? parseFloat(b.episode_number) : 0;
+            return sortAsc ? numA - numB : numB - numA;
+        });
+
+    const totalEps = filteredEpisodes.length;
 
     return (
         <View className="mt-2 pb-8">
@@ -80,9 +89,21 @@ export function EpisodeList({ episodes, totalEps, endpoint, thumb }: Props) {
                     <Text className="text-foreground text-base font-bold" style={{ color: accent }}>
                         Episode List
                     </Text>
-                    <Text className="text-foreground font-normal text-xs">
-                        {totalEps} eps
-                    </Text>
+                    <View className="flex-row items-center gap-3">
+                        <Text className="text-foreground font-normal text-xs">
+                            {totalEps} eps
+                        </Text>
+                        <PressableFeedback
+                            onPress={() => setSortAsc(prev => !prev)}
+                            hitSlop={8}
+                            className="flex-row items-center gap-1"
+                        >
+                            {sortAsc
+                                ? <SortFromBottomToTop size={28} color={accent} />
+                                : <SortFromTopToBottom size={28} color={accent} />
+                            }
+                        </PressableFeedback>
+                    </View>
                 </View>
             </View>
 
