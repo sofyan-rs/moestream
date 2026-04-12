@@ -6,7 +6,7 @@ import { Bookmark as BookmarkBold, Home as HomeBold, Magnifer as MagniferBold, S
 import { Bookmark as BookmarkLine, Home as HomeLine, Magnifer as MagniferLine, Settings as SettingsLine } from "react-native-solar-icons/icons/outline";
 import { useUniwind } from 'uniwind';
 
-const TAB_BAR_HEIGHT = 65;
+const TAB_BAR_HEIGHT = 70;
 
 export default function TabLayout() {
   const { bottom } = useSafeAreaInsets();
@@ -21,7 +21,7 @@ export default function TabLayout() {
         backgroundColor: theme === 'light' ? appTheme.colors.light.surface : appTheme.colors.dark.surface,
         height: TAB_BAR_HEIGHT + bottom,
         paddingTop: 5,
-        paddingBottom: bottom,
+        paddingBottom: bottom + 5,
         paddingHorizontal: 5,
         borderTopWidth: 0,
         borderTopColor: theme === 'light' ? appTheme.colors.light.primary : appTheme.colors.dark.primary,

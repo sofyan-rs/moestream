@@ -1,5 +1,6 @@
+import { PressableFeedback } from 'heroui-native'
 import React from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 
 type Props = {
     title: string
@@ -12,11 +13,11 @@ export function SectionHeader({ title, onSeeAll }: Props) {
             <Text className='text-lg font-semibold text-foreground'>
                 {title}
             </Text>
-            <Pressable onPress={onSeeAll}>
+            <PressableFeedback onPress={onSeeAll}>
                 <Text className='text-sm font-medium text-accent'>
                     See All
                 </Text>
-            </Pressable>
+            </PressableFeedback>
         </View>
     )
 }

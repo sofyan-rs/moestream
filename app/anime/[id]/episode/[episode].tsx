@@ -1,10 +1,8 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { EpisodeScreen } from '@/src/features/episode/episode-screen';
 
-export default function EpisodeScreen() {
-    return (
-        <View>
-            <Text>[episode]</Text>
-        </View>
-    )
+export default function EpisodePage() {
+    const { id, episode } = useLocalSearchParams<{ id: string; episode: string }>();
+    return <EpisodeScreen animeId={id} episodeNumber={parseInt(episode, 10)} />;
 }

@@ -1,8 +1,9 @@
 import StarIcon from '@/src/components/icons/star';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { PressableFeedback } from 'heroui-native';
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 const CARD_W = 118;
 
@@ -23,7 +24,7 @@ export function PortraitCard({ item, showRating, showBadge }: Props) {
     const router = useRouter();
 
     return (
-        <Pressable
+        <PressableFeedback
             style={{ width: CARD_W, marginRight: 12 }}
             onPress={() => router.push(`/anime/${item.id}`)}
         >
@@ -67,6 +68,6 @@ export function PortraitCard({ item, showRating, showBadge }: Props) {
             >
                 {item.title}
             </Text>
-        </Pressable>
+        </PressableFeedback>
     )
 }

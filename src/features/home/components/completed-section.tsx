@@ -4,7 +4,7 @@ import { TRENDING, type TrendingAnime } from '../data/home-dummy-data'
 import { PortraitCard } from './portrait-card'
 import { SectionHeader } from './section-header'
 
-export function TrendingSection() {
+export function CompletedSection() {
     return (
         <View className="mb-3">
             <SectionHeader title="Trending Now" />

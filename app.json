@@ -19,7 +19,14 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ],
+      "package": "com.anonymous.moestream"
     },
     "web": {
       "output": "static",
@@ -40,16 +47,18 @@
         }
       ],
       "expo-font",
-      "react-native-video",
-      {
-        "enableNotificationControls": true,
-        "androidExtensions": {
-          "useExoplayerRtsp": false,
-          "useExoplayerSmoothStreaming": false,
-          "useExoplayerHls": false,
-          "useExoplayerDash": false
+      [
+        "react-native-video",
+        {
+          "enableNotificationControls": true,
+          "androidExtensions": {
+            "useExoplayerRtsp": false,
+            "useExoplayerSmoothStreaming": false,
+            "useExoplayerHls": false,
+            "useExoplayerDash": false
+          }
         }
-      }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

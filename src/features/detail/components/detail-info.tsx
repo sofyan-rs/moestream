@@ -47,11 +47,11 @@ export function DetailInfo({ anime, bookmarked, onToggleBookmark, onPlay }: Prop
             {/* CTA Buttons */}
             <View className="flex-row gap-2.5 mt-2">
                 <Button className="flex-1" onPress={onPlay}>
-                    <Play size={15} color="white" />
+                    <Play size={16} color="white" />
                     <Text className="text-white font-bold text-sm">Play</Text>
                 </Button>
                 <Button variant="outline" className="flex-1 bg-surface">
-                    <DownloadMinimalistic size={15} color={iconColor} />
+                    <DownloadMinimalistic size={16} color={iconColor} />
                     <Text className="text-foreground font-semibold text-sm">Download</Text>
                 </Button>
             </View>

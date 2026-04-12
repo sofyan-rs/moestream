@@ -1,8 +1,9 @@
 import StarIcon from '@/src/components/icons/star';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { PressableFeedback } from 'heroui-native';
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { type SearchAnime } from '../data/search-dummy-data';
 
 // const CARD_W = 110
@@ -15,7 +16,7 @@ export function AnimeGridCard({ item }: Props) {
     const router = useRouter();
 
     return (
-        <Pressable
+        <PressableFeedback
             style={{ width: '33.3%', paddingHorizontal: 7, marginBottom: 16 }}
             onPress={() => router.push(`/anime/${item.id}`)}
         >
@@ -40,6 +41,6 @@ export function AnimeGridCard({ item }: Props) {
             <Text className="text-xs font-semibold text-foreground mt-0.5" numberOfLines={2}>
                 {item.title}
             </Text>
-        </Pressable>
+        </PressableFeedback>
     )
 }
