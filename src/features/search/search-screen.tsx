@@ -1,26 +1,35 @@
-import React, { useMemo, useState } from 'react';
+import LoadingSpinner from '@/src/components/loading/loading-spinner';
+import { getSearch, type TSearchData } from '@/src/services/api/search';
+import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AnimeGridCard } from './components/anime-grid-card';
-import { GenreFilter } from './components/genre-filter';
+// import { AnimeGridCard } from './components/anime-grid-card';
+// import { GenreFilter } from './components/genre-filter';
 import { SearchBar } from './components/search-bar';
 import { SearchEmptyState } from './components/search-empty-state';
-import { GENRES, SEARCH_RESULTS } from './data/search-dummy-data';
+import { SearchResultCard } from './components/search-result-card';
 
 export function SearchScreen() {
     const { top } = useSafeAreaInsets();
     const [query, setQuery] = useState('');
-    const [selectedGenre, setSelectedGenre] = useState('All');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
 
-    const filtered = useMemo(() => {
-        const q = query.trim().toLowerCase();
-        return SEARCH_RESULTS.filter(anime => {
-            const matchesQuery = q.length === 0 || anime.title.toLowerCase().includes(q);
-            const matchesGenre =
-                selectedGenre === 'All' || anime.genres.includes(selectedGenre);
-            return matchesQuery && matchesGenre;
-        })
-    }, [query, selectedGenre]);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedQuery(query.trim());
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [query]);
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['search', debouncedQuery],
+        queryFn: () => getSearch({ query: debouncedQuery }),
+        enabled: debouncedQuery.length > 0,
+    });
+
+    const results: TSearchData[] = data?.search ?? [];
+    const isQueryEmpty = debouncedQuery.length === 0;
 
     return (
         <View className="flex-1 bg-background" style={{ paddingTop: top }}>
@@ -30,25 +39,26 @@ export function SearchScreen() {
                     onChangeText={setQuery}
                     onClear={() => setQuery('')}
                 />
-                <GenreFilter
-                    genres={GENRES}
-                    selected={selectedGenre}
-                    onSelect={setSelectedGenre}
-                />
+                {/* <GenreFilter genres={GENRES} selected={selectedGenre} onSelect={setSelectedGenre} /> */}
             </View>
 
-            {filtered.length > 0 ? (
-                <FlatList
-                    data={filtered}
-                    keyExtractor={item => item.id}
-                    numColumns={3}
-                    contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 32 }}
-                    columnWrapperStyle={{ justifyContent: 'flex-start' }}
-                    renderItem={({ item }) => <AnimeGridCard item={item} />}
+            {isQueryEmpty ? (
+                <SearchEmptyState variant="initial" />
+            ) : isLoading ? (
+                <LoadingSpinner size="lg" />
+            ) : results.length > 0 ? (
+                <FlatList<TSearchData>
+                    data={results}
+                    keyExtractor={item => item.endpoint}
+                    renderItem={({ item }) => <SearchResultCard item={item} />}
                     showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 32 }}
+                    ItemSeparatorComponent={() => (
+                        <View className="mx-5 border-b border-border opacity-50" />
+                    )}
                 />
             ) : (
-                <SearchEmptyState />
+                <SearchEmptyState variant="no-results" />
             )}
         </View>
     )

@@ -1,15 +1,13 @@
 import StarIcon from '@/src/components/icons/star';
+import { type TSearchData } from '@/src/services/api/search';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { PressableFeedback } from 'heroui-native';
 import React from 'react';
 import { Text, View } from 'react-native';
-import { type SearchAnime } from '../data/search-dummy-data';
-
-// const CARD_W = 110
 
 type Props = {
-    item: SearchAnime;
+    item: TSearchData;
 }
 
 export function AnimeGridCard({ item }: Props) {
@@ -18,23 +16,30 @@ export function AnimeGridCard({ item }: Props) {
     return (
         <PressableFeedback
             style={{ width: '33.3%', paddingHorizontal: 7, marginBottom: 16 }}
-            onPress={() => router.push(`/anime/${item.id}`)}
+            onPress={() => router.push(`/anime/${item.endpoint}`)}
         >
             <View className="rounded-xl overflow-hidden">
                 <Image
-                    source={{ uri: item.cover }}
+                    source={{ uri: item.thumb }}
                     style={{ width: '100%', height: 105 * 1.45 }}
                     contentFit="cover"
                 />
             </View>
 
+            {/* {item.rating && (
+                <View className="flex-row items-center gap-1 mt-2">
+                    <StarIcon size={10} color="#FF2D55" />
+                    <Text className="text-accent font-normal" style={{ fontSize: 10 }}>
+                        {item.rating}
+                    </Text>
+                </View>
+            )} */}
+
             <View className="flex-row items-center gap-1 mt-2">
+                {item.status}
                 <StarIcon size={10} color="#FF2D55" />
                 <Text className="text-accent font-normal" style={{ fontSize: 10 }}>
-                    {item.rating}
-                </Text>
-                <Text className="text-foreground font-normal" style={{ fontSize: 10 }}>
-                    • {item.episodeCount} eps
+                    {item.status}
                 </Text>
             </View>
 
