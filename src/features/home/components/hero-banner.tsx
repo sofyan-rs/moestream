@@ -1,23 +1,37 @@
+import LoadingSpinner from '@/src/components/loading/loading-spinner';
 import { appTheme } from '@/src/constants/app-theme';
+import { getOngoing, type TOngoingSeries } from '@/src/services/api/ongoing';
+import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Button, Chip } from 'heroui-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, Text, View } from 'react-native';
 import { Bookmark, ClapperboardPlay, Play } from 'react-native-solar-icons/icons/bold';
 import { useUniwind } from 'uniwind';
-import { type FeaturedAnime } from '../data/home-dummy-data';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SLIDE_MARGIN = 0;
 const SLIDE_WIDTH = SCREEN_WIDTH - SLIDE_MARGIN * 2;
+const BANNER_COUNT = 5;
 
-type Props = {
-    items: FeaturedAnime[];
+function pickRandom<T>(arr: T[], count: number): T[] {
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
 }
 
-export function HeroBanner({ items }: Props) {
+export function HeroBanner() {
+    const { data, isLoading } = useQuery({
+        queryKey: ['ongoing', 1],
+        queryFn: () => getOngoing({ page: 1 }),
+    });
+
+    const items: TOngoingSeries[] = useMemo(
+        () => pickRandom(data?.ongoing ?? [], BANNER_COUNT),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [data?.ongoing.length],
+    );
     const router = useRouter();
     const { theme } = useUniwind();
     const isDark = theme === 'dark';
@@ -69,6 +83,12 @@ export function HeroBanner({ items }: Props) {
         startAutoPlay();
     };
 
+    if (isLoading || items.length === 0) {
+        return (
+            <LoadingSpinner size="lg" height={300} />
+        );
+    }
+
     return (
         <View className="">
             <ScrollView
@@ -86,19 +106,16 @@ export function HeroBanner({ items }: Props) {
             >
                 {items.map((anime, index) => (
                     <View
-                        key={anime.id}
-                        style={{
-                            width: SLIDE_WIDTH,
-                            marginRight: index < items.length - 1 ? 0 : 0,
-                        }}
+                        key={anime.endpoint}
+                        style={{ width: SLIDE_WIDTH }}
                     >
                         <Pressable
                             className="overflow-hidden"
-                            onPress={() => router.push(`/anime/${anime.id}`)}
+                            onPress={() => router.push(`/anime/${anime.endpoint}`)}
                             style={{ height: 300 }}
                         >
                             <Image
-                                source={{ uri: anime.cover }}
+                                source={{ uri: anime.thumb }}
                                 style={{ width: '100%', height: '100%' }}
                                 contentFit="cover"
                             />
@@ -124,38 +141,34 @@ export function HeroBanner({ items }: Props) {
                                     {anime.title}
                                 </Text>
 
-                                {/* Episodes */}
+                                {/* Latest episode + updated day */}
                                 <View className="flex-row items-center mb-3 mt-1.5">
                                     <View className="flex-row items-center gap-1">
                                         <ClapperboardPlay size={13} color={accentColor} />
                                         <Text className='text-xs text-white font-normal'>
-                                            {anime.episodeCount} Episodes
+                                            EP {anime.latest_episode ?? 'Ongoing'} · {anime.updated_day}
                                         </Text>
                                     </View>
                                 </View>
 
-
-                                {/* Genre chips */}
+                                {/* Updated on chip */}
                                 <View className="flex-row flex-wrap gap-1.5 mb-4">
-                                    {anime.genres.map(g => (
-                                        <Chip
-                                            key={g}
-                                            variant='tertiary'
-                                            className="px-2 py-0.5"
-                                            style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.6)', borderRadius: 4 }}
-                                        >
-                                            <Text className='text-xs font-medium text-white'>
-                                                {g}
-                                            </Text>
-                                        </Chip>
-                                    ))}
+                                    <Chip
+                                        variant='tertiary'
+                                        className="px-2 py-0.5"
+                                        style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.6)', borderRadius: 4 }}
+                                    >
+                                        <Text className='text-xs font-medium text-white'>
+                                            {anime.updated_on}
+                                        </Text>
+                                    </Chip>
                                 </View>
 
                                 {/* CTA buttons inside cover */}
                                 <View className="flex-row gap-2.5">
                                     <Button
                                         className="flex-1"
-                                        onPress={() => router.push(`/anime/${anime.id}`)}
+                                        onPress={() => router.push(`/anime/${anime.endpoint}`)}
                                     >
                                         <Play size={15} color="white" />
                                         <Text className='text-white font-bold text-sm'>

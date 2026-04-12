@@ -1,7 +1,8 @@
+import LoadingSpinner from '@/src/components/loading/loading-spinner'
+import { getCompleted, type TCompletedSeries } from '@/src/services/api/completed'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import { ActivityIndicator, FlatList, View } from 'react-native'
-import { getCompleted, type TCompletedSeries } from '@/src/services/api/completed'
+import { FlatList, View } from 'react-native'
 import { PortraitCard } from './portrait-card'
 import { SectionHeader } from './section-header'
 
@@ -17,7 +18,7 @@ export function CompletedSection() {
         <View className="mb-3">
             <SectionHeader title="Completed Series" />
             {isLoading ? (
-                <ActivityIndicator className="mt-4" />
+                <LoadingSpinner size="lg" />
             ) : (
                 <FlatList<TCompletedSeries>
                     data={items}
