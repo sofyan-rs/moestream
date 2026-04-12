@@ -1,6 +1,6 @@
 import LoadingSpinner from '@/src/components/loading/loading-spinner';
 import { appTheme } from '@/src/constants/app-theme';
-import { getOngoing, type TOngoingSeries } from '@/src/services/api/ongoing';
+import { getCompleted, type TCompletedSeries } from '@/src/services/api/completed';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { PressableFeedback } from 'heroui-native';
@@ -8,9 +8,9 @@ import React, { useCallback } from 'react';
 import { FlatList, RefreshControl, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'react-native-solar-icons/icons/outline';
-import { NewEpisodeCard } from './components/new-episode-card';
+import { CompletedSeriesCard } from './components/completed-series-card';
 
-export default function NewEpisodesScreen() {
+export default function CompletedScreen() {
     const router = useRouter();
     const { top } = useSafeAreaInsets();
 
@@ -23,14 +23,14 @@ export default function NewEpisodesScreen() {
         refetch,
         isRefetching,
     } = useInfiniteQuery({
-        queryKey: ['ongoing-list'],
-        queryFn: ({ pageParam = 1 }) => getOngoing({ page: pageParam as number }),
+        queryKey: ['completed-list'],
+        queryFn: ({ pageParam = 1 }) => getCompleted({ page: pageParam as number }),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) =>
-            lastPage.ongoing.length > 0 ? allPages.length + 1 : undefined,
+            lastPage.completed.length > 0 ? allPages.length + 1 : undefined,
     });
 
-    const items: TOngoingSeries[] = data?.pages.flatMap(p => p.ongoing) ?? [];
+    const items: TCompletedSeries[] = data?.pages.flatMap(p => p.completed) ?? [];
 
     const onEndReached = useCallback(() => {
         if (hasNextPage && !isFetchingNextPage) {
@@ -43,20 +43,20 @@ export default function NewEpisodesScreen() {
             {/* Header */}
             <View className="flex-row items-center gap-3 p-5 bg-surface">
                 <PressableFeedback onPress={() => router.back()} hitSlop={12}>
-                    <ArrowLeft size={24} color={appTheme.colors.light.primary} />
+                    <ArrowLeft size={22} color="#FF2D55" />
                 </PressableFeedback>
                 <Text className="text-lg font-semibold text-foreground">
-                    New Episodes
+                    Completed Series
                 </Text>
             </View>
 
             {isLoading ? (
                 <LoadingSpinner size='lg' />
             ) : (
-                <FlatList<TOngoingSeries>
+                <FlatList<TCompletedSeries>
                     data={items}
                     keyExtractor={item => item.endpoint}
-                    renderItem={({ item }) => <NewEpisodeCard item={item} />}
+                    renderItem={({ item }) => <CompletedSeriesCard item={item} />}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 32 }}
                     onEndReached={onEndReached}

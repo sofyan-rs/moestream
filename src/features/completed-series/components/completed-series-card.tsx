@@ -1,5 +1,6 @@
+import StarIcon from '@/src/components/icons/star';
 import { appTheme } from '@/src/constants/app-theme';
-import { type TOngoingSeries } from '@/src/services/api/ongoing';
+import { type TCompletedSeries } from '@/src/services/api/completed';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { PressableFeedback } from 'heroui-native';
@@ -12,14 +13,16 @@ const THUMB_W = 90;
 const THUMB_H = THUMB_W * 1.42;
 
 type Props = {
-    item: TOngoingSeries;
+    item: TCompletedSeries;
 }
 
-export function NewEpisodeCard({ item }: Props) {
+export function CompletedSeriesCard({ item }: Props) {
     const router = useRouter();
     const { theme } = useUniwind();
     const isDark = theme === 'dark';
     const iconColor = isDark ? appTheme.colors.dark.text : appTheme.colors.light.text;
+
+    const score = parseFloat(item.score);
 
     return (
         <PressableFeedback
@@ -28,6 +31,7 @@ export function NewEpisodeCard({ item }: Props) {
         >
             <PressableFeedback.Highlight />
             <PressableFeedback.Ripple />
+
             {/* Thumbnail */}
             <View className="rounded-xl overflow-hidden" style={{ width: THUMB_W, height: THUMB_H }}>
                 <Image
@@ -35,15 +39,6 @@ export function NewEpisodeCard({ item }: Props) {
                     style={{ width: THUMB_W, height: THUMB_H }}
                     contentFit="cover"
                 />
-                {/* NEW badge */}
-                <View
-                    className="absolute bg-accent rounded-md px-1.5 py-0.5"
-                    style={{ top: 7, left: 7 }}
-                >
-                    <Text className="font-bold text-white" style={{ fontSize: 8 }}>
-                        NEW
-                    </Text>
-                </View>
             </View>
 
             {/* Info */}
@@ -52,19 +47,27 @@ export function NewEpisodeCard({ item }: Props) {
                     {item.title}
                 </Text>
 
-                {item.latest_episode && (
-                    <View className="flex-row items-center gap-1.5">
-                        <ClapperboardPlay size={14} color={appTheme.colors.light.primary} />
-                        <Text className="text-xs font-medium text-accent">
-                            EP {item.latest_episode}
+                <View className="flex-row items-center gap-3">
+                    {!isNaN(score) && (
+                        <View className="flex-row items-center gap-1">
+                            <StarIcon size={14} color={appTheme.colors.light.primary} />
+                            <Text className="text-xs font-medium text-accent">
+                                {score.toFixed(1)}
+                            </Text>
+                        </View>
+                    )}
+                    <View className="flex-row items-center gap-1">
+                        <Calendar size={14} color={iconColor} />
+                        <Text className="text-xs text-foreground font-normal">
+                            {item.updated_on}
                         </Text>
                     </View>
-                )}
+                </View>
 
                 <View className="flex-row items-center gap-1.5">
-                    <Calendar size={14} color={iconColor} />
+                    <ClapperboardPlay size={14} color={iconColor} />
                     <Text className="text-xs text-foreground font-normal">
-                        {item.updated_on} · {item.updated_day}
+                        {item.total_episode} Episodes
                     </Text>
                 </View>
             </View>

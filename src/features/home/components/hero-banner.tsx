@@ -144,7 +144,7 @@ export function HeroBanner() {
                                 {/* Latest episode + updated day */}
                                 <View className="flex-row items-center mb-3 mt-1.5">
                                     <View className="flex-row items-center gap-1">
-                                        <ClapperboardPlay size={13} color={accentColor} />
+                                        <ClapperboardPlay size={14} color={accentColor} />
                                         <Text className='text-xs text-white font-normal'>
                                             EP {anime.latest_episode ?? 'Ongoing'} · {anime.updated_day}
                                         </Text>
