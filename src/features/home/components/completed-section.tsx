@@ -1,21 +1,43 @@
+import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import { FlatList, View } from 'react-native'
-import { TRENDING, type TrendingAnime } from '../data/home-dummy-data'
+import { ActivityIndicator, FlatList, View } from 'react-native'
+import { getCompleted, type TCompletedSeries } from '@/src/services/api/completed'
 import { PortraitCard } from './portrait-card'
 import { SectionHeader } from './section-header'
 
 export function CompletedSection() {
+    const { data, isLoading } = useQuery({
+        queryKey: ['completed', 1],
+        queryFn: () => getCompleted({ page: 1 }),
+    })
+
+    const items = data?.completed ?? []
+
     return (
         <View className="mb-3">
             <SectionHeader title="Completed Series" />
-            <FlatList<TrendingAnime>
-                data={TRENDING}
-                renderItem={({ item }) => <PortraitCard item={item} showRating />}
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingHorizontal: 20 }}
-            />
+            {isLoading ? (
+                <ActivityIndicator className="mt-4" />
+            ) : (
+                <FlatList<TCompletedSeries>
+                    data={items}
+                    renderItem={({ item }) => (
+                        <PortraitCard
+                            item={{
+                                id: item.endpoint,
+                                title: item.title,
+                                cover: item.thumb,
+                                rating: parseFloat(item.score) || undefined,
+                            }}
+                            showRating
+                        />
+                    )}
+                    keyExtractor={item => item.endpoint}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ paddingHorizontal: 20 }}
+                />
+            )}
         </View>
     )
 }
