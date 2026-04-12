@@ -1,6 +1,7 @@
 import LoadingSpinner from '@/src/components/loading/loading-spinner';
 import { getOngoing, type TOngoingSeries } from '@/src/services/api/ongoing';
 import { useQuery } from '@tanstack/react-query';
+import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import { PortraitCard } from './portrait-card';
@@ -16,7 +17,7 @@ export function NewEpisodesSection() {
 
     return (
         <View className="mb-3">
-            <SectionHeader title="New Episodes" />
+            <SectionHeader title="New Episodes" onSeeAll={() => router.push('/new-episodes')} />
             {isLoading ? (
                 <LoadingSpinner size="lg" />
             ) : (

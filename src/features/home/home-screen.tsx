@@ -1,5 +1,4 @@
 import { appTheme } from '@/src/constants/app-theme'
-import { ContinueWatchingSection } from '@/src/features/home/components/continue-watching-section'
 import { HeroBanner } from '@/src/features/home/components/hero-banner'
 import { HomeHeader } from '@/src/features/home/components/home-header'
 import { NewEpisodesSection } from '@/src/features/home/components/new-episodes-section'
@@ -32,7 +31,7 @@ export default function HomeScreen() {
         >
             <HomeHeader />
             <HeroBanner />
-            <ContinueWatchingSection />
+            {/* <ContinueWatchingSection /> */}
             <NewEpisodesSection />
             <CompletedSection />
             <View className="h-12" />
