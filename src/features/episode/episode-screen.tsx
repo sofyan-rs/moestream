@@ -13,7 +13,7 @@ import { EpisodeSynopsis } from './components/episode-synopsis';
 import { EpisodeTitleInfo } from './components/episode-title-info';
 import { QualitySwitcher } from './components/quality-switcher';
 import { ServerSwitcher } from './components/server-switcher';
-import { QUALITIES, SERVERS, type Quality, type Server } from './episode-constants';
+import { QUALITIES, SERVERS, type Quality, type Server } from './data/episode-constants';
 
 type Props = {
     animeId: string;

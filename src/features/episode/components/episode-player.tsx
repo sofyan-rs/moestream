@@ -5,7 +5,7 @@ import { Dimensions, Modal, StatusBar, Text, TouchableOpacity, View } from 'reac
 import { Pause, Play } from 'react-native-solar-icons/icons/bold';
 import { ArrowLeft, FullScreen, QuitFullScreen, SmartphoneRotate2 } from 'react-native-solar-icons/icons/outline';
 import Video, { VideoRef } from 'react-native-video';
-import { formatTime } from '../episode-constants';
+import { formatTime } from '../data/episode-constants';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const VIDEO_HEIGHT = Math.round((SCREEN_WIDTH * 9) / 16);
