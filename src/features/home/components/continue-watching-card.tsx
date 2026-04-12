@@ -6,7 +6,7 @@ import React from 'react';
 import { Dimensions, Text, View } from 'react-native';
 import { Play } from 'react-native-solar-icons/icons/bold';
 import { useUniwind } from 'uniwind';
-import { type ContinueWatchingItem } from '../data/home-dummy-data';
+import { type ContinueWatchingItem } from './continue-watching-section';
 
 const CARD_W = Dimensions.get('window').width * 0.56;
 
