@@ -3,8 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Button } from 'heroui-native';
 import React from 'react';
-import { Dimensions, Text, View } from 'react-native';
-import { Play } from 'react-native-solar-icons/icons/bold';
+import { Dimensions, View } from 'react-native';
 import { ArrowLeft } from 'react-native-solar-icons/icons/outline';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -44,21 +43,21 @@ export function DetailCover({ cover, onPlay }: Props) {
             </View>
 
             {/* Play button */}
-            <Button onPress={onPlay}
+            {/* <Button onPress={onPlay}
                 className="absolute self-center items-center justify-center rounded-xl"
                 style={{
                     top: COVER_HEIGHT / 2 - 32,
                     backgroundColor: 'rgba(255,45,85,0.85)',
                 }}>
                 <Play size={28} color="white" />
-            </Button>
+            </Button> */}
 
             {/* Watch trailer label */}
-            <View className="absolute self-center" style={{ top: COVER_HEIGHT / 2 + 28 }}>
+            {/* <View className="absolute self-center" style={{ top: COVER_HEIGHT / 2 + 28 }}>
                 <Text className="text-white text-xs font-medium" style={{ opacity: 0.85 }}>
                     Watch Trailer
                 </Text>
-            </View>
+            </View> */}
         </View>
     );
 }

@@ -38,7 +38,7 @@ export default function SettingsScreen() {
             </ListGroup>
             <View className='items-center justify-center mt-4'>
                 <Text className='text-sm font-medium text-foreground'>
-                    Created by Sofyan
+                    Created by KoiDev
                 </Text>
             </View>
         </ScrollView>
