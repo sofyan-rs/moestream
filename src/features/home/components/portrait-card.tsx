@@ -56,8 +56,8 @@ export function PortraitCard({ item, showRating, showBadge }: Props) {
 
             {/* Episode + time ago */}
             {showBadge && item.episode && (
-                <Text className='font-normal text-accent mt-2' style={{ fontSize: 10 }}>
-                    {item.episode} • {item.timeAgo}
+                <Text className='font-medium text-accent mt-2' style={{ fontSize: 10 }}>
+                    EP {item.episode} • {item.timeAgo}
                 </Text>
             )}
 

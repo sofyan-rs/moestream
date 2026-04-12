@@ -7,7 +7,7 @@ import { SectionHeader } from './section-header'
 export function CompletedSection() {
     return (
         <View className="mb-3">
-            <SectionHeader title="Trending Now" />
+            <SectionHeader title="Completed Series" />
             <FlatList<TrendingAnime>
                 data={TRENDING}
                 renderItem={({ item }) => <PortraitCard item={item} showRating />}
