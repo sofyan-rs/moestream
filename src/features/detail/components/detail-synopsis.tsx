@@ -5,12 +5,13 @@ import { AltArrowDown, AltArrowUp } from 'react-native-solar-icons/icons/linear'
 import { useUniwind } from 'uniwind';
 
 type Props = {
-    synopsis: string;
+    sinopsis: string[];
 }
 
 const MAX_LINES = 3;
 
-export function DetailSynopsis({ synopsis }: Props) {
+export function DetailSynopsis({ sinopsis }: Props) {
+    const synopsis = sinopsis.join(' ');
     const [expanded, setExpanded] = useState(false);
     const { theme } = useUniwind();
     const accent = theme === 'dark' ? appTheme.colors.dark.primary : appTheme.colors.light.primary;

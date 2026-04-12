@@ -1,20 +1,20 @@
 import { appTheme } from '@/src/constants/app-theme';
+import { type TAnimeDetail } from '@/src/services/api/detail';
 import { Button } from 'heroui-native';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Bookmark, Play } from 'react-native-solar-icons/icons/bold';
 import { Bookmark as BookmarkOutline, DownloadMinimalistic } from 'react-native-solar-icons/icons/linear';
 import { useUniwind } from 'uniwind';
-import { type AnimeDetail } from '../data/detail-dummy-data';
 
 type Props = {
-    anime: AnimeDetail;
+    animeDetail: TAnimeDetail;
     bookmarked: boolean;
     onToggleBookmark: () => void;
     onPlay: () => void;
 }
 
-export function DetailInfo({ anime, bookmarked, onToggleBookmark, onPlay }: Props) {
+export function DetailInfo({ animeDetail, bookmarked, onToggleBookmark, onPlay }: Props) {
     const { theme } = useUniwind();
     const isDark = theme === 'dark';
     const iconColor = isDark ? appTheme.colors.dark.text : appTheme.colors.light.text;
@@ -24,7 +24,7 @@ export function DetailInfo({ anime, bookmarked, onToggleBookmark, onPlay }: Prop
             {/* Title + bookmark */}
             <View className="flex-row items-start justify-between gap-3">
                 <Text className="text-foreground text-2xl font-bold flex-1" numberOfLines={2}>
-                    {anime.title}
+                    {animeDetail.title}
                 </Text>
                 <Button
                     variant="ghost"
@@ -41,7 +41,7 @@ export function DetailInfo({ anime, bookmarked, onToggleBookmark, onPlay }: Prop
 
             {/* Genres */}
             <Text className="text-foreground font-normal text-sm mt-2 mb-3">
-                {anime.genres.join(', ')}
+                {animeDetail.genres.join(', ')}
             </Text>
 
             {/* CTA Buttons */}

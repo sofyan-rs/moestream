@@ -20,6 +20,8 @@ export type TEpisode = {
   episode_title: string;
   episode_endpoint: string;
   episode_date: string;
+  episode_number: string | null;
+  type: "episode" | "full" | "batch" | "special";
 };
 
 export interface IDetailResponse {

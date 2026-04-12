@@ -1,5 +1,6 @@
 export type AnimeEpisode = {
     id: string
+    endpoint?: string
     number: number
     title: string
     duration: string
