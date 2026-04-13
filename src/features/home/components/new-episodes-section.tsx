@@ -1,5 +1,5 @@
 import LoadingSpinner from '@/src/components/loading/loading-spinner';
-import { getOngoing, type TOngoingSeries } from '@/src/services/api/ongoing';
+import { getOngoing, type IAiringData } from '@/src/services/api/ongoing';
 import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import React from 'react';
@@ -13,7 +13,7 @@ export function NewEpisodesSection() {
         queryFn: () => getOngoing({ page: 1 }),
     });
 
-    const items = data?.ongoing ?? [];
+    const items = data?.data ?? [];
 
     return (
         <View className="mb-3">
@@ -21,21 +21,21 @@ export function NewEpisodesSection() {
             {isLoading ? (
                 <LoadingSpinner size="lg" />
             ) : (
-                <FlatList<TOngoingSeries>
+                <FlatList<IAiringData>
                     data={items}
                     renderItem={({ item }) => (
                         <PortraitCard
                             item={{
-                                id: item.endpoint,
+                                id: item.session,
                                 title: item.title,
-                                cover: item.thumb,
-                                episode: item.latest_episode ?? undefined,
-                                timeAgo: item.updated_on,
+                                cover: item.poster || item.image,
+                                episode: item.episode ? String(item.episode) : undefined,
+                                timeAgo: new Date(item.created_at).toLocaleDateString(),
                             }}
                             showBadge
                         />
                     )}
-                    keyExtractor={item => item.endpoint}
+                    keyExtractor={item => item.session}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 4 }}

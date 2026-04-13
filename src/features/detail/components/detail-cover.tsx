@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Button } from 'heroui-native';
 import React from 'react';
 import { Dimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'react-native-solar-icons/icons/outline';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -16,6 +17,8 @@ type Props = {
 
 export function DetailCover({ cover, onPlay }: Props) {
     const router = useRouter();
+    const { top } = useSafeAreaInsets();
+
 
     return (
         <View style={{ height: COVER_HEIGHT }}>
@@ -32,7 +35,7 @@ export function DetailCover({ cover, onPlay }: Props) {
             />
 
             {/* Top bar */}
-            <View className="absolute top-0 left-0 right-0 flex-row items-center p-5">
+            <View className="absolute top-0 left-0 right-0 flex-row items-center p-5" style={{ paddingTop: top }}>
                 <Button onPress={() => router.back()}
                     className="w-10 h-10 rounded-full items-center justify-center border-0"
                     variant='outline'

@@ -22,8 +22,31 @@ export const getSearch = async ({
   query: string;
 }): Promise<ISearchResponse> => {
   try {
-    const response = await ApiClient.get(`/search/${query}`);
-    return response.data as ISearchResponse;
+    const response = await ApiClient.get(`/search?q=${encodeURIComponent(query)}&page=1`);
+    const payload = response.data as {
+      data?: {
+        title?: string;
+        poster?: string;
+        status?: string;
+        score?: string | number | null;
+        session?: string;
+      }[];
+    };
+
+    return {
+      status: true,
+      message: "OK",
+      query,
+      search: (payload.data ?? []).map((item) => ({
+        title: item.title ?? "",
+        thumb: item.poster ?? "",
+        genres: [],
+        status: item.status ?? "",
+        rating:
+          item.score === null || item.score === undefined ? null : String(item.score),
+        endpoint: item.session ?? "",
+      })),
+    };
   } catch (error) {
     console.error(error);
     throw error;

@@ -1,5 +1,5 @@
 import { appTheme } from '@/src/constants/app-theme';
-import { type TOngoingSeries } from '@/src/services/api/ongoing';
+import { type IAiringData } from '@/src/services/api/ongoing';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { PressableFeedback } from 'heroui-native';
@@ -12,7 +12,7 @@ const THUMB_W = 90;
 const THUMB_H = THUMB_W * 1.42;
 
 type Props = {
-    item: TOngoingSeries;
+    item: IAiringData;
 }
 
 export function NewEpisodeCard({ item }: Props) {
@@ -24,14 +24,14 @@ export function NewEpisodeCard({ item }: Props) {
     return (
         <PressableFeedback
             className="flex-row px-5 py-3 gap-3"
-            onPress={() => router.push(`/anime/${item.endpoint}`)}
+            onPress={() => router.push(`/anime/${item.session}`)}
         >
             <PressableFeedback.Highlight />
             <PressableFeedback.Ripple />
             {/* Thumbnail */}
             <View className="rounded-xl overflow-hidden" style={{ width: THUMB_W, height: THUMB_H }}>
                 <Image
-                    source={{ uri: item.thumb }}
+                    source={{ uri: item.poster || item.image }}
                     style={{ width: THUMB_W, height: THUMB_H }}
                     contentFit="cover"
                 />
@@ -52,11 +52,11 @@ export function NewEpisodeCard({ item }: Props) {
                     {item.title}
                 </Text>
 
-                {item.latest_episode && (
+                {item.episode && (
                     <View className="flex-row items-center gap-1.5">
                         <ClapperboardPlay size={14} color={appTheme.colors.light.primary} />
                         <Text className="text-xs font-medium text-accent">
-                            EP {item.latest_episode}
+                            EP {String(item.episode)}
                         </Text>
                     </View>
                 )}
@@ -64,7 +64,7 @@ export function NewEpisodeCard({ item }: Props) {
                 <View className="flex-row items-center gap-1.5">
                     <Calendar size={14} color={iconColor} />
                     <Text className="text-xs text-foreground font-normal">
-                        {item.updated_on} · {item.updated_day}
+                        {new Date(item.created_at).toLocaleDateString()} · {new Date(item.created_at).toLocaleDateString(undefined, { weekday: "short" })}
                     </Text>
                 </View>
             </View>

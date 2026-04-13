@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const API_URL = "https://api-anime.sofyan.id/api/v1";
+export const API_URL =
+  "https://casio-fabulous-suit-fragrance.trycloudflare.com/api";
 
 export const ApiClient = axios.create({
   baseURL: API_URL,

@@ -1,6 +1,6 @@
 import LoadingSpinner from '@/src/components/loading/loading-spinner';
 import { appTheme } from '@/src/constants/app-theme';
-import { getOngoing, type TOngoingSeries } from '@/src/services/api/ongoing';
+import { getOngoing, type IAiringData } from '@/src/services/api/ongoing';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { PressableFeedback } from 'heroui-native';
@@ -27,10 +27,10 @@ export default function NewEpisodesScreen() {
         queryFn: ({ pageParam = 1 }) => getOngoing({ page: pageParam as number }),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) =>
-            lastPage.ongoing.length > 0 ? allPages.length + 1 : undefined,
+            lastPage.paginationInfo.nextPageUrl ? allPages.length + 1 : undefined,
     });
 
-    const items: TOngoingSeries[] = data?.pages.flatMap(p => p.ongoing) ?? [];
+    const items: IAiringData[] = data?.pages.flatMap(p => p.data) ?? [];
 
     const onEndReached = useCallback(() => {
         if (hasNextPage && !isFetchingNextPage) {
@@ -53,9 +53,9 @@ export default function NewEpisodesScreen() {
             {isLoading ? (
                 <LoadingSpinner size='lg' />
             ) : (
-                <FlatList<TOngoingSeries>
+                <FlatList<IAiringData>
                     data={items}
-                    keyExtractor={item => item.endpoint}
+                    keyExtractor={item => item.session}
                     renderItem={({ item }) => <NewEpisodeCard item={item} />}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 32 }}

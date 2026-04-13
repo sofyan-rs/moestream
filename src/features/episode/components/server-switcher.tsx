@@ -1,12 +1,12 @@
 import { Button } from 'heroui-native';
 import { ScrollView, Text, View } from 'react-native';
 import { cn } from 'tailwind-variants';
-import { type Server } from '../data/episode-constants';
+import { type TPlayableSource } from '@/src/services/api/episode';
 
 type Props = {
-    servers: readonly Server[];
+    servers: readonly TPlayableSource[];
     selectedServerId: string;
-    onSelect: (server: Server) => void;
+    onSelect: (server: TPlayableSource) => void;
 };
 
 export function ServerSwitcher({ servers, selectedServerId, onSelect }: Props) {

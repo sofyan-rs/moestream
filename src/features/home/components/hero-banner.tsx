@@ -1,6 +1,6 @@
 import LoadingSpinner from '@/src/components/loading/loading-spinner';
 import { appTheme } from '@/src/constants/app-theme';
-import { getOngoing, type TOngoingSeries } from '@/src/services/api/ongoing';
+import { getOngoing, type IAiringData } from '@/src/services/api/ongoing';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -27,10 +27,10 @@ export function HeroBanner() {
         queryFn: () => getOngoing({ page: 1 }),
     });
 
-    const items: TOngoingSeries[] = useMemo(
-        () => pickRandom(data?.ongoing ?? [], BANNER_COUNT),
+    const items: IAiringData[] = useMemo(
+        () => pickRandom(data?.data ?? [], BANNER_COUNT),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [data?.ongoing.length],
+        [data?.data.length],
     );
     const router = useRouter();
     const { theme } = useUniwind();
@@ -106,16 +106,16 @@ export function HeroBanner() {
             >
                 {items.map((anime, index) => (
                     <View
-                        key={anime.endpoint}
+                        key={anime.session}
                         style={{ width: SLIDE_WIDTH }}
                     >
                         <Pressable
                             className="overflow-hidden"
-                            onPress={() => router.push(`/anime/${anime.endpoint}`)}
+                            onPress={() => router.push(`/anime/${anime.session}`)}
                             style={{ height: 300 }}
                         >
                             <Image
-                                source={{ uri: anime.thumb }}
+                                source={{ uri: anime.poster || anime.image }}
                                 style={{ width: '100%', height: '100%' }}
                                 contentFit="cover"
                             />
@@ -146,7 +146,7 @@ export function HeroBanner() {
                                     <View className="flex-row items-center gap-1">
                                         <ClapperboardPlay size={14} color={accentColor} />
                                         <Text className='text-xs text-white font-normal'>
-                                            EP {anime.latest_episode ?? 'Ongoing'} · {anime.updated_day}
+                                            EP {anime.episode ? String(anime.episode) : 'Ongoing'} · {new Date(anime.created_at).toLocaleDateString(undefined, { weekday: "short" })}
                                         </Text>
                                     </View>
                                 </View>
@@ -159,7 +159,7 @@ export function HeroBanner() {
                                         style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.6)', borderRadius: 4 }}
                                     >
                                         <Text className='text-xs font-medium text-white'>
-                                            {anime.updated_on}
+                                            {new Date(anime.created_at).toLocaleDateString()}
                                         </Text>
                                     </Chip>
                                 </View>
@@ -168,7 +168,7 @@ export function HeroBanner() {
                                 <View className="flex-row gap-2.5">
                                     <Button
                                         className="flex-1"
-                                        onPress={() => router.push(`/anime/${anime.endpoint}`)}
+                                        onPress={() => router.push(`/anime/${anime.session}`)}
                                     >
                                         <Play size={15} color="white" />
                                         <Text className='text-white font-bold text-sm'>

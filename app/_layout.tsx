@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { StatusBar } from 'react-native';
+import { useUniwind } from 'uniwind';
 import './global.css';
 
 // Keep splash screen visible until fonts are ready
@@ -30,6 +31,9 @@ export default function RootLayout() {
     Montserrat_600SemiBold,
     Montserrat_700Bold,
   });
+
+  const { theme } = useUniwind();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     if (loaded || error) {
@@ -46,7 +50,8 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <HeroUINativeProvider >
-          <StatusBar barStyle="light-content" />
+          <StatusBar barStyle=
+            {isDark ? 'light-content' : 'dark-content'} />
           <Stack screenOptions={{
             headerShown: false,
           }}>

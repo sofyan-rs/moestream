@@ -1,13 +1,13 @@
 import { Button } from 'heroui-native';
 import { ScrollView, Text, View } from 'react-native';
 import { cn } from 'tailwind-variants';
-import { type AnimeEpisode } from '../../detail/data/detail-dummy-data';
+import { type TEpisodeRelease } from '@/src/services/api/episode';
 
 type Props = {
-    episodes: AnimeEpisode[];
+    episodes: TEpisodeRelease[];
     totalEps: number;
     currentEpisodeNumber: number;
-    onSelect: (episodeNumber: number) => void;
+    onSelect: (episodeSession: string) => void;
     accent: string;
     surfaceColor: string;
     isDark: boolean;
@@ -48,7 +48,7 @@ export function EpisodeGrid({ episodes, totalEps, currentEpisodeNumber, onSelect
                             // </TouchableOpacity>
                             <Button
                                 key={ep.id}
-                                onPress={() => onSelect(ep.number)}
+                                onPress={() => onSelect(ep.session)}
                                 variant="outline"
                                 size='sm'
                                 className={

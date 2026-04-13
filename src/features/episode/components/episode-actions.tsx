@@ -2,7 +2,7 @@
 import { appTheme } from '@/src/constants/app-theme';
 import { Button } from 'heroui-native';
 import { Text, View } from 'react-native';
-import { DownloadMinimalistic, Share, SkipNext, SkipPrevious } from 'react-native-solar-icons/icons/linear';
+import { SkipNext, SkipPrevious } from 'react-native-solar-icons/icons/linear';
 import { cn } from 'tailwind-variants';
 
 type Props = {
@@ -10,8 +10,8 @@ type Props = {
     hasNext: boolean;
     onPrev: () => void;
     onNext: () => void;
-    onDownload: () => void;
-    onShare: () => void;
+    onDownload?: () => void;
+    onShare?: () => void;
     accent: string;
     surfaceColor: string;
     isDark: boolean;
@@ -19,7 +19,6 @@ type Props = {
 
 export function EpisodeActions({
     hasPrev, hasNext, onPrev, onNext,
-    onDownload, onShare,
     accent, surfaceColor, isDark,
 }: Props) {
     const iconColor = isDark ? appTheme.colors.dark.text : appTheme.colors.light.text;
@@ -27,7 +26,7 @@ export function EpisodeActions({
 
     return (
         <View className="p-5 flex-col gap-3">
-            {/* Download / Share */}
+            {/* Download / Share (temporarily hidden)
             <View className='flex-row gap-2.5'>
                 <Button variant="outline" className="flex-1 bg-surface round" onPress={onDownload}>
                     <DownloadMinimalistic size={16} color={iconColor} />
@@ -42,6 +41,7 @@ export function EpisodeActions({
                     </Text>
                 </Button>
             </View>
+            */}
 
             {/* Prev / Next */}
             <View className='flex-row gap-2.5'>

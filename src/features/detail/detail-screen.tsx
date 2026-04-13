@@ -48,7 +48,7 @@ export function DetailScreen({ id }: Props) {
     }
 
     return (
-        <View className="flex-1 bg-background" style={{ paddingTop: top }}>
+        <View className="flex-1 bg-background" >
             <ScrollView
                 className="flex-1 bg-background"
                 showsVerticalScrollIndicator={false}
@@ -68,7 +68,7 @@ export function DetailScreen({ id }: Props) {
                 <DetailSynopsis sinopsis={data.anime_detail.sinopsis} />
                 <EpisodeList
                     episodes={data.episode_list}
-                    totalEps={data.anime_detail.total_episode}
+                    // totalEps={data.anime_detail.total_episode}
                     endpoint={data.endpoint}
                     thumb={data.anime_detail.thumb}
                 />

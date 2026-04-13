@@ -5,5 +5,5 @@ import React from 'react';
 export default function EpisodePage() {
     const { id, episode } = useLocalSearchParams<{ id: string; episode: string }>();
 
-    return <EpisodeScreen animeId={id} episodeNumber={parseInt(episode, 10)} />;
+    return <EpisodeScreen animeId={id} episodeSession={episode} />;
 }
