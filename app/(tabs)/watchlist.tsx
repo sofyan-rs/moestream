@@ -1,8 +1,6 @@
-import WatchlistScreen from '@/src/features/watchlist/watchlist-screen';
-import React from 'react';
+import WatchlistScreen from "@/src/features/watchlist/watchlist-screen";
+import React from "react";
 
 export default function WatchlistPage() {
-    return (
-        <WatchlistScreen />
-    )
+  return <WatchlistScreen />;
 }

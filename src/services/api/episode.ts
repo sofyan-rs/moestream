@@ -35,7 +35,7 @@ export const getAnimeReleases = async ({
   session: string;
 }): Promise<IEpisodeReleasesResponse> => {
   const response = await ApiClient.get(
-    `/${session}/animeReleases?sort=episode_asc&page=1`
+    `/${session}/animeReleases?sort=episode_asc&page=1`,
   );
   const payload = response.data as {
     data?: {
@@ -71,7 +71,7 @@ export const getEpisodePlay = async ({
   episodeSession: string;
 }): Promise<IPlayResponse> => {
   const response = await ApiClient.get(
-    `/play/${animeSession}?episodeId=${episodeSession}&downloads=true`
+    `/play/${animeSession}?episodeId=${episodeSession}&downloads=true`,
   );
   const payload = response.data as {
     episode?: string | number;

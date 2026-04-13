@@ -3,21 +3,18 @@ import {
   Montserrat_500Medium,
   Montserrat_600SemiBold,
   Montserrat_700Bold,
-  useFonts
-} from '@expo-google-fonts/montserrat';
-import {
-  QueryClient,
-  QueryClientProvider
-} from '@tanstack/react-query';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { HeroUINativeProvider } from 'heroui-native';
-import { useEffect } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+  useFonts,
+} from "@expo-google-fonts/montserrat";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { HeroUINativeProvider } from "heroui-native";
+import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { StatusBar } from 'react-native';
-import { useUniwind } from 'uniwind';
-import './global.css';
+import { StatusBar } from "react-native";
+import { useUniwind } from "uniwind";
+import "./global.css";
 
 // Keep splash screen visible until fonts are ready
 SplashScreen.preventAutoHideAsync();
@@ -33,7 +30,7 @@ export default function RootLayout() {
   });
 
   const { theme } = useUniwind();
-  const isDark = theme === 'dark';
+  const isDark = theme === "dark";
 
   useEffect(() => {
     if (loaded || error) {
@@ -45,16 +42,16 @@ export default function RootLayout() {
     return null;
   }
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <HeroUINativeProvider >
-          <StatusBar barStyle=
-            {isDark ? 'light-content' : 'dark-content'} />
-          <Stack screenOptions={{
-            headerShown: false,
-          }}>
+        <HeroUINativeProvider>
+          <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="anime/[id]" options={{ headerShown: false }} />
           </Stack>

@@ -22,7 +22,9 @@ export const getSearch = async ({
   query: string;
 }): Promise<ISearchResponse> => {
   try {
-    const response = await ApiClient.get(`/search?q=${encodeURIComponent(query)}&page=1`);
+    const response = await ApiClient.get(
+      `/search?q=${encodeURIComponent(query)}&page=1`,
+    );
     const payload = response.data as {
       data?: {
         title?: string;
@@ -43,7 +45,9 @@ export const getSearch = async ({
         genres: [],
         status: item.status ?? "",
         rating:
-          item.score === null || item.score === undefined ? null : String(item.score),
+          item.score === null || item.score === undefined
+            ? null
+            : String(item.score),
         endpoint: item.session ?? "",
       })),
     };
