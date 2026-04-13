@@ -1,56 +1,46 @@
 import { ApiClient } from "@/src/constants/api-url";
 
-export type TSearchData = {
+export interface ISearchPaginationInfo {
+  total: number;
+  perPage: number;
+  currentPage: number;
+  lastPage: number;
+  nextPageUrl: string | null;
+  from: number;
+  to: number;
+}
+
+export interface ISearchResultItem {
+  id: number;
   title: string;
-  thumb: string;
-  genres: string[];
   status: string;
-  rating: string | null;
-  endpoint: string;
-};
+  type: string;
+  episodes: number;
+  score: number;
+  year: number;
+  season: string;
+  poster: string;
+  session: string;
+  link: string;
+}
 
 export interface ISearchResponse {
-  status: boolean;
-  message: string;
-  search: TSearchData[];
-  query: string;
+  paginationInfo: ISearchPaginationInfo;
+  data: ISearchResultItem[];
 }
 
 export const getSearch = async ({
   query,
+  page = 1,
 }: {
   query: string;
+  page?: number;
 }): Promise<ISearchResponse> => {
   try {
     const response = await ApiClient.get(
-      `/search?q=${encodeURIComponent(query)}&page=1`,
+      `/search?q=${encodeURIComponent(query)}&page=${page}`,
     );
-    const payload = response.data as {
-      data?: {
-        title?: string;
-        poster?: string;
-        status?: string;
-        score?: string | number | null;
-        session?: string;
-      }[];
-    };
-
-    return {
-      status: true,
-      message: "OK",
-      query,
-      search: (payload.data ?? []).map((item) => ({
-        title: item.title ?? "",
-        thumb: item.poster ?? "",
-        genres: [],
-        status: item.status ?? "",
-        rating:
-          item.score === null || item.score === undefined
-            ? null
-            : String(item.score),
-        endpoint: item.session ?? "",
-      })),
-    };
+    return response.data as ISearchResponse;
   } catch (error) {
     console.error(error);
     throw error;

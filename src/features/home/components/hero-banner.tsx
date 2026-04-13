@@ -40,9 +40,11 @@ function pickRandom<T>(arr: T[], count: number): T[] {
 }
 
 export function HeroBanner() {
+  const randomPage = useMemo(() => Math.floor(Math.random() * 10) + 1, []);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["ongoing", 1],
-    queryFn: () => getOngoing({ page: 1 }),
+    queryKey: ["ongoing", randomPage],
+    queryFn: () => getOngoing({ page: randomPage }),
   });
 
   const items: IAiringData[] = useMemo(
@@ -50,6 +52,7 @@ export function HeroBanner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data?.data.length],
   );
+
   const router = useRouter();
   const { theme } = useUniwind();
   const isDark = theme === "dark";

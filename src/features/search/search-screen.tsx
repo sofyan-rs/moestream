@@ -1,12 +1,10 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
-import { getSearch, type TSearchData } from "@/src/services/api/search";
+import { getSearch, type ISearchResultItem } from "@/src/services/api/search";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-// import { AnimeGridCard } from './components/anime-grid-card';
-// import { GenreFilter } from './components/genre-filter';
 import { SearchBar } from "./components/search-bar";
 import { SearchEmptyState } from "./components/search-empty-state";
 import { SearchResultCard } from "./components/search-result-card";
@@ -25,11 +23,12 @@ export function SearchScreen() {
 
   const { data, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ["search", debouncedQuery],
-    queryFn: () => getSearch({ query: debouncedQuery }),
+    queryFn: () => getSearch({ query: debouncedQuery, page: 1 }),
     enabled: debouncedQuery.length > 0,
   });
 
-  const results: TSearchData[] = data?.search ?? [];
+  const results: ISearchResultItem[] = data?.data ?? [];
+
   const isQueryEmpty = debouncedQuery.length === 0;
 
   return (
@@ -48,9 +47,9 @@ export function SearchScreen() {
       ) : isLoading ? (
         <LoadingSpinner size="lg" />
       ) : results.length > 0 ? (
-        <FlatList<TSearchData>
+        <FlatList<ISearchResultItem>
           data={results}
-          keyExtractor={(item) => item.endpoint}
+          keyExtractor={(item) => item.session}
           renderItem={({ item }) => <SearchResultCard item={item} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}

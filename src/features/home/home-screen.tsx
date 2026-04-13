@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { CompletedSection } from "./components/completed-section";
+import { PopularSection } from "./components/popular-section";
 
 export default function HomeScreen() {
   const { top } = useSafeAreaInsets();
@@ -16,7 +16,7 @@ export default function HomeScreen() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({ queryKey: ["ongoing"] });
-    await queryClient.invalidateQueries({ queryKey: ["completed"] });
+    await queryClient.invalidateQueries({ queryKey: ["popular"] });
     setRefreshing(false);
   }, [queryClient]);
 
@@ -37,7 +37,7 @@ export default function HomeScreen() {
       <HeroBanner />
       {/* <ContinueWatchingSection /> */}
       <NewEpisodesSection />
-      <CompletedSection />
+      <PopularSection />
       <View className="h-12" />
     </ScrollView>
   );

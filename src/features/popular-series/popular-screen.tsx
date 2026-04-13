@@ -1,9 +1,6 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
-import {
-  getCompleted,
-  type TCompletedSeries,
-} from "@/src/services/api/completed";
+import { getPopular, type IPopularAnimeItem } from "@/src/services/api/popular";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { PressableFeedback } from "heroui-native";
@@ -11,9 +8,9 @@ import React, { useCallback } from "react";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft } from "react-native-solar-icons/icons/outline";
-import { CompletedSeriesCard } from "./components/completed-series-card";
+import { PopularSeriesCard } from "./components/popular-series-card";
 
-export default function CompletedScreen() {
+export default function PopularScreen() {
   const router = useRouter();
   const { top } = useSafeAreaInsets();
 
@@ -26,15 +23,17 @@ export default function CompletedScreen() {
     refetch,
     isRefetching,
   } = useInfiniteQuery({
-    queryKey: ["completed-list"],
-    queryFn: ({ pageParam = 1 }) => getCompleted({ page: pageParam as number }),
+    queryKey: ["popular-list"],
+    queryFn: ({ pageParam = 1 }) =>
+      getPopular({ page: pageParam as number, limit: 10 }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
-      lastPage.completed.length > 0 ? allPages.length + 1 : undefined,
+      lastPage.paginationInfo.currentPage < lastPage.paginationInfo.lastPage
+        ? allPages.length + 1
+        : undefined,
   });
 
-  const items: TCompletedSeries[] =
-    data?.pages.flatMap((p) => p.completed) ?? [];
+  const items: IPopularAnimeItem[] = data?.pages.flatMap((p) => p.data) ?? [];
 
   const onEndReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -44,23 +43,20 @@ export default function CompletedScreen() {
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      {/* Header */}
       <View className="flex-row items-center gap-3 p-5 bg-surface">
         <PressableFeedback onPress={() => router.back()} hitSlop={12}>
           <ArrowLeft size={22} color="#FF2D55" />
         </PressableFeedback>
-        <Text className="text-lg font-semibold text-foreground">
-          Completed Series
-        </Text>
+        <Text className="text-lg font-semibold text-foreground">Popular Series</Text>
       </View>
 
       {isLoading ? (
         <LoadingSpinner size="lg" />
       ) : (
-        <FlatList<TCompletedSeries>
+        <FlatList<IPopularAnimeItem>
           data={items}
-          keyExtractor={(item) => item.endpoint}
-          renderItem={({ item }) => <CompletedSeriesCard item={item} />}
+          keyExtractor={(item) => item.session}
+          renderItem={({ item }) => <PopularSeriesCard item={item} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 32 }}
           onEndReached={onEndReached}

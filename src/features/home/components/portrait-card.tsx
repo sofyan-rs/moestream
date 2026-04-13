@@ -1,4 +1,3 @@
-import StarIcon from "@/src/components/icons/star";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { PressableFeedback } from "heroui-native";
@@ -12,16 +11,23 @@ type Props = {
     id: string;
     title: string;
     cover: string;
-    rating?: number;
+    type?: string;
+    status?: string;
     episode?: string;
     timeAgo?: string;
   };
-  showRating?: boolean;
+  showDetails?: boolean;
   showBadge?: boolean;
 };
 
-export function PortraitCard({ item, showRating, showBadge }: Props) {
+export function PortraitCard({ item, showDetails, showBadge }: Props) {
   const router = useRouter();
+  const normalizedStatus =
+    item.status === "Currently Airing"
+      ? "Ongoing"
+      : item.status === "Finished Airing"
+        ? "Completed"
+        : item.status;
 
   return (
     <PressableFeedback
@@ -47,12 +53,11 @@ export function PortraitCard({ item, showRating, showBadge }: Props) {
         )}
       </View>
 
-      {/* Rating row */}
-      {showRating && item.rating != null && (
+      {/* Type + status row */}
+      {showDetails && (item.type || normalizedStatus) && (
         <View className="flex-row items-center gap-1 mt-2">
-          <StarIcon size={11} color="#FF2D55" />
           <Text className="font-normal text-accent" style={{ fontSize: 10 }}>
-            {item.rating}
+            {[item.type, normalizedStatus].filter(Boolean).join(" • ")}
           </Text>
         </View>
       )}

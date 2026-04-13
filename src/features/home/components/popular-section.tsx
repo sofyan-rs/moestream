@@ -1,8 +1,8 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import {
-  getCompleted,
-  type TCompletedSeries,
-} from "@/src/services/api/completed";
+  getPopular,
+  type IPopularAnimeItem,
+} from "@/src/services/api/popular";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
@@ -10,37 +10,38 @@ import { FlatList, View } from "react-native";
 import { PortraitCard } from "./portrait-card";
 import { SectionHeader } from "./section-header";
 
-export function CompletedSection() {
+export function PopularSection() {
   const { data, isLoading } = useQuery({
-    queryKey: ["completed", 1],
-    queryFn: () => getCompleted({ page: 1 }),
+    queryKey: ["popular", 1],
+    queryFn: () => getPopular({ page: 1, limit: 10 }),
   });
 
-  const items = data?.completed ?? [];
+  const items = data?.data ?? [];
 
   return (
     <View className="mb-3">
       <SectionHeader
-        title="Completed Series"
-        onSeeAll={() => router.push("/completed-series")}
+        title="Popular Series"
+        onSeeAll={() => router.push("/popular-series")}
       />
       {isLoading ? (
         <LoadingSpinner size="lg" />
       ) : (
-        <FlatList<TCompletedSeries>
+        <FlatList<IPopularAnimeItem>
           data={items}
           renderItem={({ item }) => (
             <PortraitCard
               item={{
-                id: item.endpoint,
+                id: item.session,
                 title: item.title,
-                cover: item.thumb,
-                rating: parseFloat(item.score) || undefined,
+                cover: item.image,
+                type: item.type ?? undefined,
+                status: item.status ?? undefined,
               }}
-              showRating
+              showDetails
             />
           )}
-          keyExtractor={(item) => item.endpoint}
+          keyExtractor={(item) => item.session}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20 }}
