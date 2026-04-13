@@ -20,6 +20,9 @@ export function DetailScreen({ id }: Props) {
   const { top } = useSafeAreaInsets();
   const router = useRouter();
   const [bookmarked, setBookmarked] = useState(false);
+  const [episodeSort, setEpisodeSort] = useState<"episode_desc" | "episode_asc">(
+    "episode_desc",
+  );
 
   const {
     data: detailData,
@@ -32,11 +35,12 @@ export function DetailScreen({ id }: Props) {
   const {
     data: episodeListData,
     isLoading: isEpisodeListLoading,
+    isFetching: isEpisodeListFetching,
     isError: isEpisodeListError,
   } = useQuery({
-    queryKey: ["episode-list", id],
+    queryKey: ["episode-list", id, episodeSort],
     queryFn: () =>
-      getEpisodeList({ endpoint: id, page: 1, sort: "episode_desc" }),
+      getEpisodeList({ endpoint: id, page: 1, sort: episodeSort }),
   });
 
   const handlePlay = () => {
@@ -45,7 +49,7 @@ export function DetailScreen({ id }: Props) {
     }
   };
 
-  if (isDetailLoading || isEpisodeListLoading) {
+  if (isDetailLoading || (isEpisodeListLoading && !episodeListData)) {
     return (
       <View
         className="flex-1 bg-background items-center justify-center"
@@ -89,6 +93,13 @@ export function DetailScreen({ id }: Props) {
           episodes={episodeListData.data}
           endpoint={id}
           totalEps={episodeListData.paginationInfo.total}
+          sort={episodeSort}
+          onToggleSort={() =>
+            setEpisodeSort((prev) =>
+              prev === "episode_desc" ? "episode_asc" : "episode_desc",
+            )
+          }
+          isFetching={isEpisodeListFetching}
           hasMorePages={episodeListData.paginationInfo.lastPage > 1}
           onSeeAll={() => router.push(`/anime/${id}/episode-list`)}
         />

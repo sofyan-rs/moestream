@@ -1,8 +1,9 @@
+import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { type IEpisodeListItem } from "@/src/services/api/episode-list";
 import { useRouter } from "expo-router";
 import { PressableFeedback, Separator } from "heroui-native";
-import React, { useState } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import { SortFromBottomToTop, SortFromTopToBottom } from "react-native-solar-icons/icons/linear";
 import { useUniwind } from "uniwind";
@@ -12,6 +13,9 @@ type Props = {
   episodes: IEpisodeListItem[];
   endpoint: string;
   totalEps: number;
+  sort: "episode_desc" | "episode_asc";
+  onToggleSort: () => void;
+  isFetching?: boolean;
   hasMorePages?: boolean;
   onSeeAll?: () => void;
 };
@@ -20,6 +24,9 @@ export function EpisodeList({
   episodes,
   endpoint,
   totalEps,
+  sort,
+  onToggleSort,
+  isFetching = false,
   hasMorePages = false,
   onSeeAll,
 }: Props) {
@@ -29,14 +36,6 @@ export function EpisodeList({
     theme === "dark"
       ? appTheme.colors.dark.primary
       : appTheme.colors.light.primary;
-  const [sortAsc, setSortAsc] = useState(false);
-
-  const filteredEpisodes = episodes.slice().sort((a, b) => {
-    const numA = a.episode === null ? 0 : Number(a.episode);
-    const numB = b.episode === null ? 0 : Number(b.episode);
-    return sortAsc ? numA - numB : numB - numA;
-  });
-
   return (
     <View className="mt-2 pb-8">
       <View className="px-5 mb-2">
@@ -49,20 +48,20 @@ export function EpisodeList({
             Episode List
           </Text>
           <View className="flex-row items-center gap-3">
+            <Text className="text-foreground font-normal text-xs">
+              {totalEps} eps
+            </Text>
             {hasMorePages && onSeeAll ? (
               <PressableFeedback onPress={onSeeAll} hitSlop={8}>
                 <Text className="text-accent font-semibold text-xs">See all</Text>
               </PressableFeedback>
             ) : null}
-            <Text className="text-foreground font-normal text-xs">
-              {totalEps} eps
-            </Text>
             <PressableFeedback
-              onPress={() => setSortAsc((prev) => !prev)}
+              onPress={onToggleSort}
               hitSlop={8}
               className="flex-row items-center gap-1"
             >
-              {sortAsc ? (
+              {sort === "episode_asc" ? (
                 <SortFromBottomToTop size={28} color={accent} />
               ) : (
                 <SortFromTopToBottom size={28} color={accent} />
@@ -72,7 +71,13 @@ export function EpisodeList({
         </View>
       </View>
 
-      {filteredEpisodes.map((ep, index) => (
+      {isFetching ? (
+        <View className="px-5 py-2">
+          <LoadingSpinner />
+        </View>
+      ) : null}
+
+      {episodes.map((ep, index) => (
         <View key={ep.session}>
           <EpisodeListItem
             item={ep}
@@ -81,7 +86,7 @@ export function EpisodeList({
             thumbnailUri={ep.snapshot}
             onPress={(session) => router.push(`/anime/${endpoint}/episode/${session}`)}
           />
-          {index < filteredEpisodes.length - 1 && (
+          {index < episodes.length - 1 && (
             <View
               className="mx-4"
               style={{ height: 1, backgroundColor: "rgba(148,163,184,0.12)" }}
