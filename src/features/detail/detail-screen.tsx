@@ -87,8 +87,8 @@ export function DetailScreen({ id }: Props) {
           onToggleBookmark={() => setBookmarked((prev) => !prev)}
           onPlay={handlePlay}
         />
-        <DetailStats animeDetail={detailData} />
         <DetailSynopsis sinopsis={detailData.synopsis} />
+        <DetailStats animeDetail={detailData} />
         <EpisodeList
           episodes={episodeListData.data}
           endpoint={id}

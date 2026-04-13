@@ -2,7 +2,7 @@ import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { type IEpisodeListItem } from "@/src/services/api/episode-list";
 import { useRouter } from "expo-router";
-import { PressableFeedback, Separator } from "heroui-native";
+import { PressableFeedback } from "heroui-native";
 import React from "react";
 import { Text, View } from "react-native";
 import { SortFromBottomToTop, SortFromTopToBottom } from "react-native-solar-icons/icons/linear";
@@ -37,9 +37,8 @@ export function EpisodeList({
       ? appTheme.colors.dark.primary
       : appTheme.colors.light.primary;
   return (
-    <View className="mt-2 pb-8">
-      <View className="px-5 mb-2">
-        <Separator className="mb-3" />
+    <View className="pb-8">
+      <View className="px-5 mb-3">
         <View className="flex-row items-center justify-between">
           <Text
             className="text-foreground text-base font-bold"
@@ -77,7 +76,7 @@ export function EpisodeList({
         </View>
       ) : null}
 
-      {episodes.map((ep, index) => (
+      {!isFetching && episodes.map((ep, index) => (
         <View key={ep.session}>
           <EpisodeListItem
             item={ep}

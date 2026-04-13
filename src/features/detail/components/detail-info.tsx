@@ -5,8 +5,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { Bookmark, Play } from "react-native-solar-icons/icons/bold";
 import {
-  Bookmark as BookmarkOutline,
-  DownloadMinimalistic,
+  Bookmark as BookmarkOutline
 } from "react-native-solar-icons/icons/linear";
 import { useUniwind } from "uniwind";
 
@@ -67,12 +66,12 @@ export function DetailInfo({
           <Play size={16} color="white" />
           <Text className="text-white font-bold text-sm">Play</Text>
         </Button>
-        <Button variant="outline" className="flex-1 bg-surface">
+        {/* <Button variant="outline" className="flex-1 bg-surface">
           <DownloadMinimalistic size={16} color={iconColor} />
           <Text className="text-foreground font-semibold text-sm">
             Download
           </Text>
-        </Button>
+        </Button> */}
       </View>
     </View>
   );
