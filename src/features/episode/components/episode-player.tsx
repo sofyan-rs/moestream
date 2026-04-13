@@ -133,7 +133,7 @@ function ControlsOverlay({
         padding: isFullscreen ? 12 : 0,
       }}
     >
-      {/* Top row: back | quality + fullscreen toggle */}
+      {/* Top row: back | quality (+ rotate in fullscreen) */}
       <View
         style={{ paddingHorizontal: 12, paddingTop: safeAreaTop + 8 }}
         className="flex-row items-center justify-between"
@@ -155,20 +155,6 @@ function ControlsOverlay({
           >
             <Text className="text-white text-xs font-semibold">{quality}</Text>
           </View>
-
-          <Button
-            onPress={onToggleFullscreen}
-            className="w-10 h-10 rounded-full items-center justify-center border-0"
-            variant="outline"
-            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-            hitSlop={8}
-          >
-            {isFullscreen ? (
-              <QuitFullScreen size={18} color="white" />
-            ) : (
-              <FullScreen size={18} color="white" />
-            )}
-          </Button>
 
           {/* Orientation toggle — fullscreen only */}
           {isFullscreen && (
@@ -202,22 +188,21 @@ function ControlsOverlay({
         </Button>
       </View>
 
-      {/* Bottom: times + seek bar */}
+      {/* Bottom: one row — current | seek | duration | fullscreen */}
       <View
+        className="flex-row items-center gap-2"
         style={{ paddingHorizontal: 12, paddingBottom: isFullscreen ? 28 : 12 }}
       >
-        <View className="flex-row justify-between mb-1.5">
-          <Text className="text-white text-xs font-semibold">
-            {formatTime(currentTime)}
-          </Text>
-          <Text className="text-white text-xs font-semibold">
-            {formatTime(duration)}
-          </Text>
-        </View>
+        <Text
+          className="text-white text-xs font-semibold tabular-nums shrink-0"
+          style={{ minWidth: 40 }}
+        >
+          {formatTime(currentTime)}
+        </Text>
 
-        {/* Draggable seek bar */}
         <View
           ref={seekBarRef}
+          className="min-w-0 flex-1"
           style={{ height: 28, justifyContent: "center" }}
           onLayout={() => {
             seekBarRef.current?.measure((_x, _y, width, _h, pageX) => {
@@ -256,6 +241,24 @@ function ControlsOverlay({
             />
           </View>
         </View>
+
+        <Text className="text-white text-xs font-semibold tabular-nums shrink-0">
+          {formatTime(duration)}
+        </Text>
+
+        <Button
+          onPress={onToggleFullscreen}
+          className="w-10 h-10 shrink-0 rounded-full items-center justify-center border-0"
+          variant="outline"
+          style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+          hitSlop={8}
+        >
+          {isFullscreen ? (
+            <QuitFullScreen size={18} color="white" />
+          ) : (
+            <FullScreen size={18} color="white" />
+          )}
+        </Button>
       </View>
     </View>
   );

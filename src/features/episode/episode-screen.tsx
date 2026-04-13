@@ -7,7 +7,7 @@ import {
 } from "@/src/services/api/episode";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
-import { Separator } from "heroui-native";
+import { Button, Separator } from "heroui-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, StatusBar, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -100,6 +100,7 @@ export function EpisodeScreen({
     null,
   );
   const [selectedQuality, setSelectedQuality] = useState("720p");
+  const [showSourceControls, setShowSourceControls] = useState(false);
 
   const sources = useMemo(
     () => playQuery.data?.sources ?? [],
@@ -187,17 +188,28 @@ export function EpisodeScreen({
 
         <Separator />
 
-        <View className="p-5">
-          <ServerSwitcher
-            servers={displaySources}
-            selectedServerId={selectedServerSafe.id}
-            onSelect={setSelectedServer}
-          />
-          <QualitySwitcher
-            qualities={availableQualities}
-            selectedQuality={selectedQuality}
-            onSelect={setSelectedQuality}
-          />
+        <View className="p-5 gap-3">
+          <Button
+            variant="outline"
+            className="bg-surface"
+            onPress={() => setShowSourceControls((open) => !open)}
+          >
+            {showSourceControls ? "Hide server & quality" : "Server & quality"}
+          </Button>
+          {showSourceControls ? (
+            <>
+              <ServerSwitcher
+                servers={displaySources}
+                selectedServerId={selectedServerSafe.id}
+                onSelect={setSelectedServer}
+              />
+              <QualitySwitcher
+                qualities={availableQualities}
+                selectedQuality={selectedQuality}
+                onSelect={setSelectedQuality}
+              />
+            </>
+          ) : null}
         </View>
 
         <Separator className="mt-1" />
