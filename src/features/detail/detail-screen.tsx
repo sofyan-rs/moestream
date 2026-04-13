@@ -88,7 +88,7 @@ export function DetailScreen({ id }: Props) {
         <EpisodeList
           episodes={episodeListData.data}
           endpoint={id}
-          thumb={detailData.image}
+          totalEps={episodeListData.paginationInfo.total}
           hasMorePages={episodeListData.paginationInfo.lastPage > 1}
           onSeeAll={() => router.push(`/anime/${id}/episode-list`)}
         />

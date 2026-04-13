@@ -1,84 +1,17 @@
 import { appTheme } from "@/src/constants/app-theme";
 import { type IEpisodeListItem } from "@/src/services/api/episode-list";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { PressableFeedback, Separator } from "heroui-native";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
-import { Play } from "react-native-solar-icons/icons/bold";
-import {
-  PlayCircle,
-  SortFromBottomToTop,
-  SortFromTopToBottom,
-} from "react-native-solar-icons/icons/linear";
+import { SortFromBottomToTop, SortFromTopToBottom } from "react-native-solar-icons/icons/linear";
 import { useUniwind } from "uniwind";
-
-type EpisodeItemProps = {
-  episode: IEpisodeListItem;
-  index: number;
-  animeId: string;
-  thumb: string;
-};
-
-function EpisodeItem({ episode, index, animeId, thumb }: EpisodeItemProps) {
-  const router = useRouter();
-  const { theme } = useUniwind();
-  const accent =
-    theme === "dark"
-      ? appTheme.colors.dark.primary
-      : appTheme.colors.light.primary;
-  const displayNumber =
-    episode.episode === null ? String(index + 1) : String(episode.episode);
-
-  return (
-    <PressableFeedback
-      className="flex-row items-center gap-3 px-4 py-3"
-      onPress={() =>
-        router.push(`/anime/${animeId}/episode/${episode.session}`)
-      }
-    >
-      <PressableFeedback.Highlight />
-      <PressableFeedback.Ripple />
-      <View
-        className="rounded-xl overflow-hidden"
-        style={{ width: 100, height: 62 }}
-      >
-        <Image
-          source={{ uri: thumb }}
-          style={{ width: "100%", height: "100%" }}
-          contentFit="cover"
-        />
-        <View
-          className="absolute inset-0 items-center justify-center"
-          style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
-        >
-          <Play size={28} color="white" />
-        </View>
-      </View>
-
-      <View className="flex-1">
-        <Text
-          className="text-foreground text-sm font-semibold"
-          numberOfLines={1}
-        >
-          Episode {displayNumber}
-        </Text>
-        {/* <Text className="text-foreground text-xs mt-0.5 font-normal" numberOfLines={1}>
-                    {episode.episode_title}
-                </Text> */}
-        <Text className="text-foreground text-xs mt-1 font-normal">
-          {new Date(episode.created_at).toLocaleDateString()}
-        </Text>
-      </View>
-      <PlayCircle size={22} color={accent} />
-    </PressableFeedback>
-  );
-}
+import { EpisodeListItem } from "../../episode-list/components/episode-list-item";
 
 type Props = {
   episodes: IEpisodeListItem[];
   endpoint: string;
-  thumb: string;
+  totalEps: number;
   hasMorePages?: boolean;
   onSeeAll?: () => void;
 };
@@ -86,10 +19,11 @@ type Props = {
 export function EpisodeList({
   episodes,
   endpoint,
-  thumb,
+  totalEps,
   hasMorePages = false,
   onSeeAll,
 }: Props) {
+  const router = useRouter();
   const { theme } = useUniwind();
   const accent =
     theme === "dark"
@@ -102,8 +36,6 @@ export function EpisodeList({
     const numB = b.episode === null ? 0 : Number(b.episode);
     return sortAsc ? numA - numB : numB - numA;
   });
-
-  const totalEps = filteredEpisodes.length;
 
   return (
     <View className="mt-2 pb-8">
@@ -142,11 +74,12 @@ export function EpisodeList({
 
       {filteredEpisodes.map((ep, index) => (
         <View key={ep.session}>
-          <EpisodeItem
-            episode={ep}
+          <EpisodeListItem
+            item={ep}
             index={index}
-            animeId={endpoint}
-            thumb={thumb}
+            accent={accent}
+            thumbnailUri={ep.snapshot}
+            onPress={(session) => router.push(`/anime/${endpoint}/episode/${session}`)}
           />
           {index < filteredEpisodes.length - 1 && (
             <View
