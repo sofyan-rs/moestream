@@ -1,4 +1,5 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
+import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
 import { getDetail } from "@/src/services/api/detail";
 import { getEpisodeList } from "@/src/services/api/episode-list";
 import { useQuery } from "@tanstack/react-query";
@@ -45,7 +46,12 @@ export function DetailScreen({ id }: Props) {
 
   const handlePlay = () => {
     if (episodeListData && episodeListData.data.length > 0) {
-      router.push(`/anime/${id}/episode/${episodeListData.data[0].session}`);
+      router.push(
+        buildEpisodePlayerHref(id, episodeListData.data[0].session, {
+          releasesPage: 1,
+          sort: episodeSort,
+        }),
+      );
     }
   };
 

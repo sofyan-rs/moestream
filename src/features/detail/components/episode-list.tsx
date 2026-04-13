@@ -1,5 +1,6 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
+import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
 import { type IEpisodeListItem } from "@/src/services/api/episode-list";
 import { useRouter } from "expo-router";
 import { PressableFeedback } from "heroui-native";
@@ -83,7 +84,14 @@ export function EpisodeList({
             index={index}
             accent={accent}
             thumbnailUri={ep.snapshot}
-            onPress={(session) => router.push(`/anime/${endpoint}/episode/${session}`)}
+            onPress={(session) =>
+              router.push(
+                buildEpisodePlayerHref(endpoint, session, {
+                  releasesPage: 1,
+                  sort,
+                }),
+              )
+            }
           />
           {index < episodes.length - 1 && (
             <View

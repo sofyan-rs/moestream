@@ -1,12 +1,11 @@
 import { Button } from "heroui-native";
 import { Text, View } from "react-native";
 import { cn } from "tailwind-variants";
-import { type Quality } from "../data/episode-constants";
 
 type Props = {
-  qualities: readonly Quality[];
-  selectedQuality: Quality;
-  onSelect: (quality: Quality) => void;
+  qualities: readonly string[];
+  selectedQuality: string;
+  onSelect: (quality: string) => void;
 };
 
 export function QualitySwitcher({

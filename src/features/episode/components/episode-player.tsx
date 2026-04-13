@@ -18,7 +18,16 @@ import {
   SmartphoneRotate2,
 } from "react-native-solar-icons/icons/outline";
 import Video, { VideoRef } from "react-native-video";
-import { formatTime } from "../data/episode-constants";
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${m}:${s}`;
+}
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const VIDEO_HEIGHT = Math.round((SCREEN_WIDTH * 9) / 16);
@@ -92,7 +101,7 @@ function ControlsOverlay({
         onSeekMoveRef.current(
           clampRatio(
             (gestureState.moveX - seekBarPageXRef.current) /
-              seekBarWidthRef.current,
+            seekBarWidthRef.current,
           ),
         );
       },
@@ -256,6 +265,8 @@ function ControlsOverlay({
 
 type Props = {
   sourceUrl: string;
+  /** Stream `Referer` header (provider embed URL, e.g. kwik.cx player page) */
+  referer: string;
   selectedQuality: string;
   safeAreaTop: number;
   accent: string;
@@ -264,6 +275,7 @@ type Props = {
 
 export function EpisodePlayer({
   sourceUrl,
+  referer,
   selectedQuality,
   safeAreaTop,
   accent,
@@ -402,9 +414,9 @@ export function EpisodePlayer({
   const videoSource = useMemo(
     () => ({
       uri: sourceUrl,
-      headers: { referer: "https://kwik.cx/e/tf4xiD4FPTeZ" },
+      headers: { referer },
     }),
-    [sourceUrl],
+    [sourceUrl, referer],
   );
 
   const sharedControls = {

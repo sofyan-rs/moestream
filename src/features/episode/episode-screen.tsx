@@ -1,32 +1,41 @@
-import { appTheme } from "@/src/constants/app-theme";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
+import { appTheme } from "@/src/constants/app-theme";
+import {
+  getAnimeReleases,
+  getEpisodePlay,
+  type TPlayableSource,
+} from "@/src/services/api/episode";
+import { useQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { Separator } from "heroui-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, StatusBar, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
-import { useQuery } from "@tanstack/react-query";
 import { EpisodeActions } from "./components/episode-actions";
 import { EpisodeGrid } from "./components/episode-grid";
 import { EpisodePlayer } from "./components/episode-player";
-import { EpisodeSynopsis } from "./components/episode-synopsis";
 import { EpisodeTitleInfo } from "./components/episode-title-info";
 import { QualitySwitcher } from "./components/quality-switcher";
 import { ServerSwitcher } from "./components/server-switcher";
 import {
-  getAnimeReleases,
-  getEpisodePlay,
-  type TPlayableSource,
-} from "@/src/services/api/episode";
-import { type Quality } from "./data/episode-constants";
+  buildEpisodePlayerHref,
+  type EpisodeReleasesSort,
+} from "./episode-path";
 
 type Props = {
   animeId: string;
   episodeSession: string;
+  releasesPage: number;
+  releasesSort: EpisodeReleasesSort;
 };
 
-export function EpisodeScreen({ animeId, episodeSession }: Props) {
+export function EpisodeScreen({
+  animeId,
+  episodeSession,
+  releasesPage,
+  releasesSort,
+}: Props) {
   const router = useRouter();
   const { theme } = useUniwind();
   const { top } = useSafeAreaInsets();
@@ -39,8 +48,13 @@ export function EpisodeScreen({ animeId, episodeSession }: Props) {
     : appTheme.colors.light.surface;
 
   const releasesQuery = useQuery({
-    queryKey: ["animeReleases", animeId],
-    queryFn: () => getAnimeReleases({ session: animeId }),
+    queryKey: ["animeReleases", animeId, releasesPage, releasesSort],
+    queryFn: () =>
+      getAnimeReleases({
+        session: animeId,
+        page: releasesPage,
+        sort: releasesSort,
+      }),
     enabled: Boolean(animeId),
   });
 
@@ -60,14 +74,32 @@ export function EpisodeScreen({ animeId, episodeSession }: Props) {
   const currentEpisodeIndex = episodes.findIndex(
     (item) => item.session === episodeSession,
   );
-  const hasPrev = currentEpisodeIndex > 0;
-  const hasNext =
-    currentEpisodeIndex >= 0 && currentEpisodeIndex < episodes.length - 1;
+
+  const isDesc = releasesSort === "episode_desc";
+  const hasPrev = isDesc
+    ? currentEpisodeIndex >= 0 && currentEpisodeIndex < episodes.length - 1
+    : currentEpisodeIndex > 0;
+  const hasNext = isDesc
+    ? currentEpisodeIndex > 0
+    : currentEpisodeIndex >= 0 && currentEpisodeIndex < episodes.length - 1;
+
+  const prevSession =
+    currentEpisodeIndex >= 0
+      ? isDesc
+        ? episodes[currentEpisodeIndex + 1]?.session
+        : episodes[currentEpisodeIndex - 1]?.session
+      : undefined;
+  const nextSession =
+    currentEpisodeIndex >= 0
+      ? isDesc
+        ? episodes[currentEpisodeIndex - 1]?.session
+        : episodes[currentEpisodeIndex + 1]?.session
+      : undefined;
 
   const [selectedServer, setSelectedServer] = useState<TPlayableSource | null>(
     null,
   );
-  const [selectedQuality, setSelectedQuality] = useState<Quality>("720p");
+  const [selectedQuality, setSelectedQuality] = useState("720p");
 
   const sources = useMemo(
     () => playQuery.data?.sources ?? [],
@@ -98,11 +130,23 @@ export function EpisodeScreen({ animeId, episodeSession }: Props) {
   }, [episodeSession, selectedQuality]);
 
   const navigateToEpisode = (epSession: string) => {
-    router.replace(`/anime/${animeId}/episode/${epSession}`);
+    router.replace(
+      buildEpisodePlayerHref(animeId, epSession, {
+        releasesPage,
+        sort: releasesSort,
+      }),
+    );
   };
 
   if (releasesQuery.isLoading || playQuery.isLoading) {
-    return <LoadingSpinner size="lg" />;
+    return (
+      <View
+        className="flex-1 bg-background items-center justify-center"
+        style={{ paddingTop: top }}
+      >
+        <LoadingSpinner size="lg" />
+      </View>
+    );
   }
 
   if (!currentEpisode || !playQuery.data || !selectedServerSafe) {
@@ -122,6 +166,7 @@ export function EpisodeScreen({ animeId, episodeSession }: Props) {
 
       <EpisodePlayer
         sourceUrl={selectedServerSafe.url}
+        referer={selectedServerSafe.embed}
         selectedQuality={selectedQuality}
         safeAreaTop={top}
         accent={accent}
@@ -160,14 +205,8 @@ export function EpisodeScreen({ animeId, episodeSession }: Props) {
         <EpisodeActions
           hasPrev={hasPrev}
           hasNext={hasNext}
-          onPrev={() =>
-            hasPrev &&
-            navigateToEpisode(episodes[currentEpisodeIndex - 1].session)
-          }
-          onNext={() =>
-            hasNext &&
-            navigateToEpisode(episodes[currentEpisodeIndex + 1].session)
-          }
+          onPrev={() => hasPrev && prevSession && navigateToEpisode(prevSession)}
+          onNext={() => hasNext && nextSession && navigateToEpisode(nextSession)}
           accent={accent}
           surfaceColor={surfaceColor}
           isDark={isDark}
@@ -177,17 +216,16 @@ export function EpisodeScreen({ animeId, episodeSession }: Props) {
 
         <EpisodeGrid
           episodes={episodes}
-          totalEps={episodes.length}
+          totalEps={
+            releasesQuery.data?.paginationInfo.total ?? episodes.length
+          }
           currentEpisodeNumber={currentEpisode.number}
           onSelect={navigateToEpisode}
-          accent={accent}
-          surfaceColor={surfaceColor}
-          isDark={isDark}
+          hasMorePages={
+            (releasesQuery.data?.paginationInfo.lastPage ?? 1) > 1
+          }
+          onSeeAll={() => router.push(`/anime/${animeId}/episode-list`)}
         />
-
-        <Separator className="mt-11" />
-
-        <EpisodeSynopsis synopsis={playQuery.data.synopsis} accent={accent} />
 
         <View className="h-20" />
       </ScrollView>

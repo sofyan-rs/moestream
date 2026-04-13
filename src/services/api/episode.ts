@@ -1,67 +1,120 @@
 import { ApiClient } from "@/src/constants/api-url";
+import { getEpisodeList, type IEpisodeListItem } from "./episode-list";
+
+export interface IEpisodePlayIds {
+  animepahe_id: number;
+  mal_id: number | null;
+  anilist_id: number | null;
+  anime_planet_id: number | null;
+  ann_id: number | null;
+  anilist: string | null;
+  anime_planet: string | null;
+  ann: string | null;
+  kitsu: string | null;
+  myanimelist: string | null;
+}
+
+export interface IEpisodePlaySource {
+  url: string;
+  isM3U8: boolean;
+  embed: string;
+  resolution: string;
+  isDub: boolean;
+  fanSub: string;
+  download: string;
+}
+
+export interface IEpisodePlayDownload {
+  fansub: string;
+  quality: string;
+  resolution: string;
+  filesize: string;
+  isDub: boolean;
+  pahe: string;
+  download: string;
+}
+
+/** Raw body from `GET /play/:session?episodeId=…&downloads=true` */
+export interface IEpisodePlayApiResponse {
+  ids: IEpisodePlayIds;
+  session: string;
+  provider: string;
+  episode: string;
+  anime_title: string;
+  sources: IEpisodePlaySource[];
+  downloads: IEpisodePlayDownload[];
+}
 
 export type TPlayableSource = {
   id: string;
   label: string;
   url: string;
   quality: string;
-  fansub: string;
+  /** Kwik (or provider) embed page URL — use as `Referer` for stream requests */
+  embed: string;
 };
 
 export type TEpisodeRelease = {
-  id: string;
+  id: number;
   number: number;
   title: string;
   duration: string;
-  thumbnail: string;
   session: string;
 };
 
-export interface IEpisodeReleasesResponse {
-  items: TEpisodeRelease[];
-}
-
-export interface IPlayResponse {
-  episodeNumber: number;
+/** Mapped play payload for the episode screen */
+export interface IEpisodeResponse {
   title: string;
-  synopsis: string;
-  duration: string;
   sources: TPlayableSource[];
 }
 
-export const getAnimeReleases = async ({
+function toEpisodeNumber(episode: IEpisodeListItem["episode"]): number {
+  if (episode === null || episode === undefined) return 0;
+  if (typeof episode === "number") return episode;
+  const n = parseInt(String(episode), 10);
+  return Number.isNaN(n) ? 0 : n;
+}
+
+function mapListItemToRelease(item: IEpisodeListItem): TEpisodeRelease {
+  return {
+    id: item.id,
+    number: toEpisodeNumber(item.episode),
+    title: item.title,
+    duration: item.duration,
+    session: item.session,
+  };
+}
+
+export async function getAnimeReleases({
   session,
+  page = 1,
+  sort = "episode_desc",
 }: {
   session: string;
-}): Promise<IEpisodeReleasesResponse> => {
-  const response = await ApiClient.get(
-    `/${session}/animeReleases?sort=episode_asc&page=1`,
-  );
-  const payload = response.data as {
-    data?: {
-      id?: number | string;
-      episode?: number | string | null;
-      title?: string;
-      duration?: string;
-      snapshot?: string;
-      session?: string;
-    }[];
-  };
-
+  page?: number;
+  sort?: "episode_desc" | "episode_asc";
+}) {
+  const res = await getEpisodeList({ endpoint: session, page, sort });
   return {
-    items: (payload.data ?? []).map((item, index) => ({
-      id: String(item.id ?? index),
-      number:
-        item.episode === null || item.episode === undefined
-          ? index + 1
-          : Number(item.episode),
-      title: item.title ?? "",
-      duration: item.duration ?? "-",
-      thumbnail: item.snapshot ?? "",
-      session: item.session ?? "",
-    })),
+    items: res.data.map(mapListItemToRelease),
+    paginationInfo: res.paginationInfo,
   };
-};
+}
+
+function mapPlaySource(
+  source: IEpisodePlaySource,
+  index: number,
+): TPlayableSource {
+  const quality = `${source.resolution}p`;
+  const dub = source.isDub ? " · Dub" : "";
+  return {
+    id: `${source.embed}-${index}`,
+    label: `${source.fanSub} · ${quality}${dub}`,
+    url: source.download,
+    quality,
+    embed: source.embed,
+  };
+}
 
 export const getEpisodePlay = async ({
   animeSession,
@@ -69,38 +122,13 @@ export const getEpisodePlay = async ({
 }: {
   animeSession: string;
   episodeSession: string;
-}): Promise<IPlayResponse> => {
+}): Promise<IEpisodeResponse> => {
   const response = await ApiClient.get(
     `/play/${animeSession}?episodeId=${episodeSession}&downloads=true`,
   );
-  const payload = response.data as {
-    episode?: string | number;
-    anime_title?: string;
-    sources?: {
-      url?: string;
-      resolution?: string | number;
-      fanSub?: string;
-    }[];
-  };
-
-  const sources: TPlayableSource[] = (payload.sources ?? [])
-    .filter((source) => Boolean(source.url))
-    .map((source, index) => {
-      const quality = source.resolution ? `${source.resolution}p` : "Auto";
-      return {
-        id: `server-${index + 1}`,
-        label: `Server ${index + 1}`,
-        url: source.url ?? "",
-        quality,
-        fansub: source.fanSub ?? "",
-      };
-    });
-
+  const raw = response.data as IEpisodePlayApiResponse;
   return {
-    episodeNumber: Number(payload.episode ?? 0),
-    title: payload.anime_title ?? "",
-    synopsis: "",
-    duration: "-",
-    sources,
+    title: raw.anime_title,
+    sources: raw.sources.map((s, i) => mapPlaySource(s, i)),
   };
 };

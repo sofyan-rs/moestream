@@ -29,7 +29,7 @@ export default function AnimeLayout() {
       {/* URL: /anime/[id]/episode/[episode] */}
       <Stack.Screen
         name="episode/[episode]"
-        options={{ title: "Watching Episode" }}
+        options={{ title: "Watching Episode", headerShown: false }}
       />
     </Stack>
   );

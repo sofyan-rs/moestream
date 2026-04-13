@@ -1,9 +1,10 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
+import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
 import { getEpisodeList } from "@/src/services/api/episode-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
@@ -55,6 +56,18 @@ export default function EpisodeListScreen({ id }: Props) {
 
   const totalCount = data?.pages?.[0]?.paginationInfo.total ?? episodes.length;
 
+  const releasesPageForSession = useCallback(
+    (session: string) => {
+      for (const page of data?.pages ?? []) {
+        if (page.data.some((e) => e.session === session)) {
+          return page.paginationInfo.currentPage;
+        }
+      }
+      return 1;
+    },
+    [data?.pages],
+  );
+
   if (isLoading) {
     return <View
       className="flex-1 bg-background items-center justify-center"
@@ -83,7 +96,14 @@ export default function EpisodeListScreen({ id }: Props) {
             item={item}
             index={index}
             accent={accent}
-            onPress={(session) => router.push(`/anime/${id}/episode/${session}`)}
+            onPress={(session) =>
+              router.push(
+                buildEpisodePlayerHref(id, session, {
+                  releasesPage: releasesPageForSession(session),
+                  sort,
+                }),
+              )
+            }
           />
         )}
         onEndReached={() => {
