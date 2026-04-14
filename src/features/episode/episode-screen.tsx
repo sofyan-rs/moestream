@@ -1,20 +1,21 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
+import {
+  selectWatchedEpisodeSessions,
+  useHistoryStore,
+} from "@/src/hooks/stores/history-store";
+import { getDetail } from "@/src/services/api/detail";
 import {
   getAnimeReleases,
   getEpisodePlay,
   type TPlayableSource,
 } from "@/src/services/api/episode";
-import { getDetail } from "@/src/services/api/detail";
-import {
-  selectWatchedEpisodeSessions,
-  useHistoryStore,
-} from "@/src/hooks/stores/history-store";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { Button, Separator } from "heroui-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ScrollView, StatusBar, Text, View } from "react-native";
+import { ScrollView, StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { EpisodeActions } from "./components/episode-actions";
@@ -204,9 +205,7 @@ export function EpisodeScreen({
   if (!currentEpisode || !playQuery.data || !selectedServerSafe) {
     return (
       <View className="flex-1 bg-background items-center justify-center p-5">
-        <Text className="text-foreground text-sm font-medium text-center">
-          Failed to load this episode.
-        </Text>
+        <ErrorMessage message="Failed to load episode." />
       </View>
     );
   }

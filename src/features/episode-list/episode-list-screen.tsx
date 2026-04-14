@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
@@ -34,6 +35,7 @@ export default function EpisodeListScreen({ id }: Props) {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    error,
   } = useInfiniteQuery({
     queryKey: ["episode-list-all", id, sort],
     queryFn: ({ pageParam = 1 }) =>
@@ -110,13 +112,22 @@ export default function EpisodeListScreen({ id }: Props) {
           if (hasNextPage && !isFetchingNextPage) fetchNextPage();
         }}
         onEndReachedThreshold={0.5}
-        ListHeaderComponent={<EpisodeListMeta totalCount={totalCount} />}
+        ListHeaderComponent={
+          <>
+            <EpisodeListMeta totalCount={totalCount} />
+            {error && (
+              <View className="px-4" style={{ marginTop: 10 }}>
+                <ErrorMessage message={error.message} />
+              </View>
+            )}
+          </>}
         ItemSeparatorComponent={() => (
           <View
             className="mx-5"
             style={{ height: 1, backgroundColor: "rgba(148,163,184,0.12)" }}
           />
         )}
+
         ListFooterComponent={isFetchingNextPage ? <LoadingSpinner /> : null}
         contentContainerStyle={{ paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}

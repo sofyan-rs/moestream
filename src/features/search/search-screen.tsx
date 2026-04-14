@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { getSearch, type ISearchResultItem } from "@/src/services/api/search";
@@ -21,7 +22,7 @@ export function SearchScreen() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const { data, isLoading, isRefetching, refetch } = useQuery({
+  const { data, isLoading, isRefetching, refetch, error } = useQuery({
     queryKey: ["search", debouncedQuery],
     queryFn: () => getSearch({ query: debouncedQuery, page: 1 }),
     enabled: debouncedQuery.length > 0,
@@ -41,7 +42,11 @@ export function SearchScreen() {
         />
         {/* <GenreFilter genres={GENRES} selected={selectedGenre} onSelect={setSelectedGenre} /> */}
       </View>
-
+      {error && (
+        <View className="px-5">
+          <ErrorMessage message={error.message} />
+        </View>
+      )}
       {isQueryEmpty ? (
         <SearchEmptyState variant="initial" />
       ) : isLoading ? (

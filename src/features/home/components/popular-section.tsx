@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import {
   getPopular,
@@ -11,7 +12,7 @@ import { PortraitCard } from "../../../components/anime-card/portrait-card";
 import { SectionHeader } from "./section-header";
 
 export function PopularSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["popular", 1],
     queryFn: () => getPopular({ page: 1, limit: 10 }),
   });
@@ -24,6 +25,11 @@ export function PopularSection() {
         title="Popular Series"
         onSeeAll={() => router.push("/popular-series")}
       />
+      {error && (
+        <View className="px-5">
+          <ErrorMessage message={error.message} />
+        </View>
+      )}
       {isLoading ? (
         <LoadingSpinner size="lg" />
       ) : (

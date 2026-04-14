@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
 import { getDetail } from "@/src/services/api/detail";
@@ -5,7 +6,7 @@ import { getEpisodeList } from "@/src/services/api/episode-list";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DetailCover } from "./components/detail-cover";
 import { DetailInfo } from "./components/detail-info";
@@ -28,6 +29,7 @@ export function DetailScreen({ id }: Props) {
     data: detailData,
     isLoading: isDetailLoading,
     isError: isDetailError,
+
   } = useQuery({
     queryKey: ["detail", id],
     queryFn: () => getDetail({ endpoint: id }),
@@ -68,12 +70,10 @@ export function DetailScreen({ id }: Props) {
   if (isDetailError || isEpisodeListError || !detailData || !episodeListData) {
     return (
       <View
-        className="flex-1 bg-background items-center justify-center"
+        className="flex-1 bg-background justify-center px-5"
         style={{ paddingTop: top }}
       >
-        <Text className="text-foreground text-base font-medium">
-          Failed to load anime detail.
-        </Text>
+        <ErrorMessage message={isDetailError ? "Failed to load anime detail." : isEpisodeListError ? "Failed to load episode list." : "Failed to load anime detail."} />
       </View>
     );
   }
@@ -84,6 +84,7 @@ export function DetailScreen({ id }: Props) {
         className="flex-1 bg-background"
         showsVerticalScrollIndicator={false}
         bounces={false}
+        contentContainerStyle={{ paddingBottom: 12 }}
       >
         <DetailCover cover={detailData.image} onPlay={handlePlay} />
         <DetailInfo
@@ -108,7 +109,6 @@ export function DetailScreen({ id }: Props) {
           hasMorePages={episodeListData.paginationInfo.lastPage > 1}
           onSeeAll={() => router.push(`/anime/${id}/episode-list`)}
         />
-        <View className="h-20" />
       </ScrollView>
     </View>
   );

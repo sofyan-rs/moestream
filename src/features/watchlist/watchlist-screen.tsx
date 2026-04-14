@@ -145,7 +145,9 @@ export default function WatchlistScreen() {
                   className="rounded-md bg-surface p-1.5"
                   onPress={() => remove(item.session)}
                 >
-                  <TrashBinMinimalistic size={14} color="#FFFFFF" />
+                  <TrashBinMinimalistic size={14} color={
+                    isDark ? "#FFFFFF" : "#000000"
+                  } />
                 </PressableFeedback>
               }
             />

@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { useWatchlistStore } from "@/src/hooks/stores/watchlist-store";
@@ -62,7 +63,7 @@ function airingToWatchlistEntry(anime: IAiringData) {
 export function HeroBanner() {
   const randomPage = useMemo(() => Math.floor(Math.random() * 10) + 1, []);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["ongoing", randomPage],
     queryFn: () => getOngoing({ page: randomPage }),
   });
@@ -135,6 +136,12 @@ export function HeroBanner() {
     startAutoPlay();
   };
 
+  if (error) {
+    return <View className="px-5">
+      <ErrorMessage message={error.message} />
+    </View>
+  }
+
   if (isLoading || items.length === 0) {
     return <LoadingSpinner size="lg" height={300} />;
   }
@@ -157,117 +164,117 @@ export function HeroBanner() {
         {items.map((anime) => {
           const inWatchlist = watchlistSessionSet.has(anime.session);
           return (
-          <View key={anime.session} style={{ width: SLIDE_WIDTH }}>
-            <Pressable
-              className="overflow-hidden"
-              onPress={() => router.push(`/anime/${anime.session}`)}
-              style={{ height: 300 }}
-            >
-              <Image
-                source={{ uri: anime.poster || anime.image }}
-                style={{ width: "100%", height: "100%" }}
-                contentFit="cover"
-              />
+            <View key={anime.session} style={{ width: SLIDE_WIDTH }}>
+              <Pressable
+                className="overflow-hidden"
+                onPress={() => router.push(`/anime/${anime.session}`)}
+                style={{ height: 300 }}
+              >
+                <Image
+                  source={{ uri: anime.poster || anime.image }}
+                  style={{ width: "100%", height: "100%" }}
+                  contentFit="cover"
+                />
 
-              {/* Gradient scrim fading from transparent to solid at bottom */}
-              <LinearGradient
-                colors={[
-                  "transparent",
-                  "rgba(0,0,0,0.15)",
-                  "rgba(0,0,0,0.72)",
-                  "rgba(0,0,0,0.92)",
-                ]}
-                locations={[0, 0.35, 0.7, 1]}
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  top: "20%",
-                }}
-              />
+                {/* Gradient scrim fading from transparent to solid at bottom */}
+                <LinearGradient
+                  colors={[
+                    "transparent",
+                    "rgba(0,0,0,0.15)",
+                    "rgba(0,0,0,0.72)",
+                    "rgba(0,0,0,0.92)",
+                  ]}
+                  locations={[0, 0.35, 0.7, 1]}
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    top: "20%",
+                  }}
+                />
 
-              {/* Content overlay */}
-              <View className="absolute bottom-0 left-0 right-0 p-4">
-                {/* Title */}
-                <Text
-                  className="text-2xl font-semibold text-white"
-                  numberOfLines={2}
-                >
-                  {anime.title}
-                </Text>
+                {/* Content overlay */}
+                <View className="absolute bottom-0 left-0 right-0 p-4">
+                  {/* Title */}
+                  <Text
+                    className="text-2xl font-semibold text-white"
+                    numberOfLines={2}
+                  >
+                    {anime.title}
+                  </Text>
 
-                {/* Latest episode + updated day */}
-                <View className="flex-row items-center mb-3 mt-1.5">
-                  <View className="flex-row items-center gap-1">
-                    <ClapperboardPlay size={14} color={accentColor} />
-                    <Text className="text-xs text-white font-normal">
-                      EP {anime.episode ? String(anime.episode) : "Ongoing"} ·{" "}
-                      {new Date(anime.created_at).toLocaleDateString(
-                        undefined,
-                        { weekday: "short" },
-                      )}
-                    </Text>
+                  {/* Latest episode + updated day */}
+                  <View className="flex-row items-center mb-3 mt-1.5">
+                    <View className="flex-row items-center gap-1">
+                      <ClapperboardPlay size={14} color={accentColor} />
+                      <Text className="text-xs text-white font-normal">
+                        EP {anime.episode ? String(anime.episode) : "Ongoing"} ·{" "}
+                        {new Date(anime.created_at).toLocaleDateString(
+                          undefined,
+                          { weekday: "short" },
+                        )}
+                      </Text>
+                    </View>
                   </View>
-                </View>
 
-                {/* Updated on chip */}
-                <View className="flex-row flex-wrap gap-1.5 mb-4">
-                  <Chip
-                    variant="tertiary"
-                    className="px-2 py-0.5"
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "rgba(255,255,255,0.6)",
-                      borderRadius: 4,
-                    }}
-                  >
-                    <Text className="text-xs font-medium text-white">
-                      {new Date(anime.created_at).toLocaleDateString()}
-                    </Text>
-                  </Chip>
-                </View>
-
-                {/* CTA buttons inside cover */}
-                <View className="flex-row gap-2.5">
-                  <Button
-                    className="flex-1"
-                    onPress={() => router.push(`/anime/${anime.session}`)}
-                  >
-                    <Play size={15} color="white" />
-                    <Text className="text-white font-bold text-sm">
-                      Play Now
-                    </Text>
-                  </Button>
-                  <Button
-                    className="flex-1"
-                    variant="outline"
-                    style={{
-                      borderColor: "rgba(255,255,255,0.4)",
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                    }}
-                    onPress={() =>
-                      toggleWatchlist(airingToWatchlistEntry(anime))
-                    }
-                  >
-                    {inWatchlist ? (
-                      <Bookmark size={15} color={accentColor} />
-                    ) : (
-                      <BookmarkOutline size={15} color="rgba(255,255,255,0.9)" />
-                    )}
-                    <Text
-                      className="text-sm font-semibold"
+                  {/* Updated on chip */}
+                  <View className="flex-row flex-wrap gap-1.5 mb-4">
+                    <Chip
+                      variant="tertiary"
+                      className="px-2 py-0.5"
                       style={{
-                        color: inWatchlist ? accentColor : "#FFFFFF",
+                        borderWidth: 1,
+                        borderColor: "rgba(255,255,255,0.6)",
+                        borderRadius: 4,
                       }}
                     >
-                      {inWatchlist ? "Saved" : "Watchlist"}
-                    </Text>
-                  </Button>
+                      <Text className="text-xs font-medium text-white">
+                        {new Date(anime.created_at).toLocaleDateString()}
+                      </Text>
+                    </Chip>
+                  </View>
+
+                  {/* CTA buttons inside cover */}
+                  <View className="flex-row gap-2.5">
+                    <Button
+                      className="flex-1"
+                      onPress={() => router.push(`/anime/${anime.session}`)}
+                    >
+                      <Play size={15} color="white" />
+                      <Text className="text-white font-bold text-sm">
+                        Play Now
+                      </Text>
+                    </Button>
+                    <Button
+                      className="flex-1"
+                      variant="outline"
+                      style={{
+                        borderColor: "rgba(255,255,255,0.4)",
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                      }}
+                      onPress={() =>
+                        toggleWatchlist(airingToWatchlistEntry(anime))
+                      }
+                    >
+                      {inWatchlist ? (
+                        <Bookmark size={15} color={accentColor} />
+                      ) : (
+                        <BookmarkOutline size={15} color="rgba(255,255,255,0.9)" />
+                      )}
+                      <Text
+                        className="text-sm font-semibold"
+                        style={{
+                          color: inWatchlist ? accentColor : "#FFFFFF",
+                        }}
+                      >
+                        {inWatchlist ? "Saved" : "Watchlist"}
+                      </Text>
+                    </Button>
+                  </View>
                 </View>
-              </View>
-            </Pressable>
-          </View>
+              </Pressable>
+            </View>
           );
         })}
       </ScrollView>

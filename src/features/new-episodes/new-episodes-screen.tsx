@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { getOngoing, type IAiringData } from "@/src/services/api/ongoing";
@@ -16,6 +17,7 @@ export default function NewEpisodesScreen() {
 
   const {
     data,
+    error,
     isLoading,
     isFetchingNextPage,
     hasNextPage,
@@ -49,7 +51,11 @@ export default function NewEpisodesScreen() {
           New Episodes
         </Text>
       </View>
-
+      {error && (
+        <View className="px-5" style={{ marginTop: 15 }}>
+          <ErrorMessage message={error.message} />
+        </View>
+      )}
       {isLoading ? (
         <LoadingSpinner size="lg" />
       ) : (

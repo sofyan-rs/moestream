@@ -1,3 +1,4 @@
+import ErrorMessage from "@/src/components/error/error-message";
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { getOngoing, type IAiringData } from "@/src/services/api/ongoing";
 import { useQuery } from "@tanstack/react-query";
@@ -8,12 +9,14 @@ import { PortraitCard } from "../../../components/anime-card/portrait-card";
 import { SectionHeader } from "./section-header";
 
 export function NewEpisodesSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["ongoing", 1],
     queryFn: () => getOngoing({ page: 1 }),
   });
 
   const items = data?.data ?? [];
+
+
 
   return (
     <View className="mb-3">
@@ -21,6 +24,11 @@ export function NewEpisodesSection() {
         title="New Episodes"
         onSeeAll={() => router.push("/new-episodes")}
       />
+      {error && (
+        <View className="px-5">
+          <ErrorMessage message={error.message} />
+        </View>
+      )}
       {isLoading ? (
         <LoadingSpinner size="lg" />
       ) : (
