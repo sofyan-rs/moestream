@@ -7,7 +7,7 @@ import { withUniwind } from "uniwind";
 
 const StyledIonicons = withUniwind(Ionicons);
 
-const APP_NAME = "Moestream";
+// const APP_NAME = "Moestream";
 
 type Props = {
   trigger: ReactElement;
@@ -39,7 +39,12 @@ export default function About({ trigger }: Props) {
             </View>
           </View>
           <View className="mb-6 gap-2 items-center px-1">
-            <Dialog.Title className="text-center">{APP_NAME}</Dialog.Title>
+            <Dialog.Title className="text-center">
+              <Text className="text-accent font-semibold text-2xl">
+                Moe
+              </Text>
+              <Text className="text-foreground font-semibold text-2xl">stream</Text>
+            </Dialog.Title>
             <Dialog.Description className="text-center">
               A simple anime streaming app for Android and iOS. Browse series,
               pick sources, and resume where you left off—watchlist and history

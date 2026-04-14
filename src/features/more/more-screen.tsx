@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { ListGroup, PressableFeedback, Separator, Switch } from "heroui-native";
 import React, { useEffect, useState } from "react";
@@ -9,6 +10,11 @@ export default function MoreScreen() {
   const router = useRouter();
   const { theme } = useUniwind();
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const version =
+    Constants.expoConfig?.version ??
+    Constants.nativeAppVersion ??
+    "—";
 
   useEffect(() => {
     setIsDarkMode(theme === "dark");
@@ -87,7 +93,7 @@ export default function MoreScreen() {
         </ListGroup>
         <View className="items-center justify-center mt-4">
           <Text className="text-sm font-medium text-foreground">
-            Created by KoiDev
+            v{version}
           </Text>
         </View>
       </ScrollView>
