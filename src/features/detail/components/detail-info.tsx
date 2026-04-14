@@ -1,4 +1,8 @@
 import { appTheme } from "@/src/constants/app-theme";
+import {
+  HISTORY_WATCHED_THRESHOLD,
+  useHistoryStore,
+} from "@/src/hooks/stores/history-store";
 import { useWatchlistStore } from "@/src/hooks/stores/watchlist-store";
 import { type IAnimeInfoResponse } from "@/src/services/api/detail";
 import { Button } from "heroui-native";
@@ -27,6 +31,12 @@ export function DetailInfo({
     s.items.some((i) => i.session === session),
   );
   const toggle = useWatchlistStore((s) => s.toggle);
+
+  const hasWatchHistory = useHistoryStore((s) =>
+    s.watches.some(
+      (w) => w.session === session && w.progress < HISTORY_WATCHED_THRESHOLD,
+    ),
+  );
 
   const watchlistPayload = useMemo(
     () => ({
@@ -85,7 +95,9 @@ export function DetailInfo({
       <View className="flex-row gap-2.5 mt-2">
         <Button className="flex-1" onPress={onPlay}>
           <Play size={16} color="white" />
-          <Text className="text-white font-bold text-sm">Play</Text>
+          <Text className="text-white font-bold text-sm">
+            {hasWatchHistory ? "Continue" : "Play"}
+          </Text>
         </Button>
         {/* <Button variant="outline" className="flex-1 bg-surface">
           <DownloadMinimalistic size={16} color={iconColor} />
