@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { Button, Separator } from "heroui-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ScrollView, StatusBar, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { EpisodeActions } from "./components/episode-actions";
@@ -213,7 +213,6 @@ export function EpisodeScreen({
   return (
     <View className="flex-1 bg-background">
       <Stack.Screen options={{ headerShown: false }} />
-      <StatusBar hidden />
 
       <EpisodePlayer
         key={episodeSession}

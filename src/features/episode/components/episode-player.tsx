@@ -660,6 +660,7 @@ export function EpisodePlayer({
         style={{
           width: SCREEN_WIDTH,
           height: VIDEO_HEIGHT,
+          marginTop: safeAreaTop,
           backgroundColor: "#000",
         }}
       >
