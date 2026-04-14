@@ -1,5 +1,6 @@
 import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
+import { useWatchlistStore } from "@/src/hooks/stores/watchlist-store";
 import { getOngoing, type IAiringData } from "@/src/services/api/ongoing";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
@@ -27,6 +28,7 @@ import {
   ClapperboardPlay,
   Play,
 } from "react-native-solar-icons/icons/bold";
+import { Bookmark as BookmarkOutline } from "react-native-solar-icons/icons/linear";
 import { useUniwind } from "uniwind";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -37,6 +39,24 @@ const BANNER_COUNT = 5;
 function pickRandom<T>(arr: T[], count: number): T[] {
   const shuffled = [...arr].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
+}
+
+function airingToWatchlistEntry(anime: IAiringData) {
+  const raw = anime.episode;
+  let latestEpisode = 0;
+  if (typeof raw === "number" && !Number.isNaN(raw)) {
+    latestEpisode = raw;
+  } else if (raw != null && String(raw).trim() !== "") {
+    const n = parseInt(String(raw), 10);
+    latestEpisode = Number.isNaN(n) ? 0 : n;
+  }
+  return {
+    session: anime.session,
+    title: anime.title,
+    poster: anime.poster || anime.image,
+    status: "Ongoing",
+    latestEpisode,
+  };
 }
 
 export function HeroBanner() {
@@ -58,6 +78,12 @@ export function HeroBanner() {
   const isDark = theme === "dark";
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
+  const watchlistItems = useWatchlistStore((s) => s.items);
+  const toggleWatchlist = useWatchlistStore((s) => s.toggle);
+  const watchlistSessionSet = useMemo(
+    () => new Set(watchlistItems.map((i) => i.session)),
+    [watchlistItems],
+  );
 
   const accentColor = isDark
     ? appTheme.colors.dark.primary
@@ -128,7 +154,9 @@ export function HeroBanner() {
         onScrollBeginDrag={handleScrollBegin}
         onMomentumScrollEnd={handleScrollEnd}
       >
-        {items.map((anime, index) => (
+        {items.map((anime) => {
+          const inWatchlist = watchlistSessionSet.has(anime.session);
+          return (
           <View key={anime.session} style={{ width: SLIDE_WIDTH }}>
             <Pressable
               className="overflow-hidden"
@@ -218,17 +246,30 @@ export function HeroBanner() {
                       borderColor: "rgba(255,255,255,0.4)",
                       backgroundColor: "rgba(255,255,255,0.1)",
                     }}
+                    onPress={() =>
+                      toggleWatchlist(airingToWatchlistEntry(anime))
+                    }
                   >
-                    <Bookmark size={15} color="white" />
-                    <Text className="text-sm font-semibold text-white">
-                      Watchlist
+                    {inWatchlist ? (
+                      <Bookmark size={15} color={accentColor} />
+                    ) : (
+                      <BookmarkOutline size={15} color="rgba(255,255,255,0.9)" />
+                    )}
+                    <Text
+                      className="text-sm font-semibold"
+                      style={{
+                        color: inWatchlist ? accentColor : "#FFFFFF",
+                      }}
+                    >
+                      {inWatchlist ? "Saved" : "Watchlist"}
                     </Text>
                   </Button>
                 </View>
               </View>
             </Pressable>
           </View>
-        ))}
+          );
+        })}
       </ScrollView>
 
       {/* Pagination dots */}
