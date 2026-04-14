@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { PressableFeedback } from "heroui-native";
-import React from "react";
+import React, { type ReactNode } from "react";
 import { Text, View } from "react-native";
 
 const CARD_W = 118;
@@ -18,10 +18,24 @@ type Props = {
   };
   showDetails?: boolean;
   showBadge?: boolean;
+  /** When set, card uses this width and no trailing margin (for grids). */
+  cardWidth?: number;
+  /** Rendered over the cover, top-left (e.g. episode count). */
+  coverTopLeft?: ReactNode;
+  /** Rendered over the cover, top-right (e.g. remove action). */
+  coverTopRight?: ReactNode;
 };
 
-export function PortraitCard({ item, showDetails, showBadge }: Props) {
+export function PortraitCard({
+  item,
+  showDetails,
+  showBadge,
+  cardWidth,
+  coverTopLeft,
+  coverTopRight,
+}: Props) {
   const router = useRouter();
+  const width = cardWidth ?? CARD_W;
   const normalizedStatus =
     item.status === "Currently Airing"
       ? "Ongoing"
@@ -31,14 +45,14 @@ export function PortraitCard({ item, showDetails, showBadge }: Props) {
 
   return (
     <PressableFeedback
-      style={{ width: CARD_W, marginRight: 12 }}
+      style={{ width, marginRight: cardWidth != null ? 0 : 12 }}
       onPress={() => router.push(`/anime/${item.id}`)}
     >
       {/* Poster */}
-      <View className="rounded-xl overflow-hidden">
+      <View className="rounded-xl overflow-hidden relative">
         <Image
           source={{ uri: item.cover }}
-          style={{ width: CARD_W, height: CARD_W * 1.42 }}
+          style={{ width, height: width * 1.42 }}
           contentFit="cover"
         />
         {showBadge && (
@@ -51,6 +65,30 @@ export function PortraitCard({ item, showDetails, showBadge }: Props) {
             </Text>
           </View>
         )}
+        {coverTopLeft != null ? (
+          <View
+            className="absolute z-10"
+            pointerEvents="box-none"
+            style={{
+              top: 8,
+              left: 8,
+            }}
+          >
+            {coverTopLeft}
+          </View>
+        ) : null}
+        {coverTopRight != null ? (
+          <View
+            className="absolute z-10"
+            pointerEvents="box-none"
+            style={{
+              top: 8,
+              right: 8,
+            }}
+          >
+            {coverTopRight}
+          </View>
+        ) : null}
       </View>
 
       {/* Type + status row */}

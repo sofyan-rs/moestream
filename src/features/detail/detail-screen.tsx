@@ -20,7 +20,6 @@ type Props = {
 export function DetailScreen({ id }: Props) {
   const { top } = useSafeAreaInsets();
   const router = useRouter();
-  const [bookmarked, setBookmarked] = useState(false);
   const [episodeSort, setEpisodeSort] = useState<"episode_desc" | "episode_asc">(
     "episode_desc",
   );
@@ -89,8 +88,8 @@ export function DetailScreen({ id }: Props) {
         <DetailCover cover={detailData.image} onPlay={handlePlay} />
         <DetailInfo
           animeDetail={detailData}
-          bookmarked={bookmarked}
-          onToggleBookmark={() => setBookmarked((prev) => !prev)}
+          session={id}
+          latestEpisode={episodeListData.paginationInfo.total}
           onPlay={handlePlay}
         />
         <DetailSynopsis sinopsis={detailData.synopsis} />

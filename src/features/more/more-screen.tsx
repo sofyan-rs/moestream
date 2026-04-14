@@ -1,10 +1,9 @@
-import { ListGroup, Switch } from "heroui-native";
+import { ListGroup, PressableFeedback, Separator, Switch } from "heroui-native";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { Moon, Sun } from "react-native-solar-icons/icons/bold";
 import { Uniwind, useUniwind } from "uniwind";
 
-export default function SettingsScreen() {
+export default function MoreScreen() {
   const { theme } = useUniwind();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -15,14 +14,31 @@ export default function SettingsScreen() {
   return (
     <ScrollView className="bg-background p-5">
       <ListGroup className="rounded-xl">
+        <PressableFeedback animation={false} onPress={() => { }}>
+          <PressableFeedback.Scale>
+            <ListGroup.Item disabled>
+              <ListGroup.ItemContent>
+                <ListGroup.ItemTitle>History</ListGroup.ItemTitle>
+                <ListGroup.ItemDescription>
+                  View your watching history
+                </ListGroup.ItemDescription>
+              </ListGroup.ItemContent>
+              <ListGroup.ItemSuffix />
+            </ListGroup.Item>
+          </PressableFeedback.Scale>
+          <PressableFeedback.Ripple />
+        </PressableFeedback>
+
+        <Separator className="mx-4" />
+
         <ListGroup.Item>
-          <ListGroup.ItemPrefix>
+          {/* <ListGroup.ItemPrefix>
             {isDarkMode ? (
               <Sun size={22} color={theme === "light" ? "black" : "white"} />
             ) : (
               <Moon size={22} color={theme === "light" ? "black" : "white"} />
             )}
-          </ListGroup.ItemPrefix>
+          </ListGroup.ItemPrefix> */}
           <ListGroup.ItemContent>
             <ListGroup.ItemTitle>
               {isDarkMode ? "Light Mode" : "Dark Mode"}
@@ -40,6 +56,8 @@ export default function SettingsScreen() {
             />
           </ListGroup.ItemSuffix>
         </ListGroup.Item>
+
+
       </ListGroup>
       <View className="items-center justify-center mt-4">
         <Text className="text-sm font-medium text-foreground">

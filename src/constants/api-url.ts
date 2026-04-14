@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const API_URL =
-  "https://carbon-knit-anyone-passive.trycloudflare.com/api";
+  "https://info-length-springer-program.trycloudflare.com/api";
 
 export const ApiClient = axios.create({
   baseURL: API_URL,

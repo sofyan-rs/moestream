@@ -6,13 +6,13 @@ import {
   Bookmark as BookmarkBold,
   Home as HomeBold,
   Magnifer as MagniferBold,
-  Settings as SettingsBold,
+  MenuDots as MenuDotsBold,
 } from "react-native-solar-icons/icons/bold-duotone";
 import {
   Bookmark as BookmarkLine,
   Home as HomeLine,
   Magnifer as MagniferLine,
-  Settings as SettingsLine,
+  MenuDots as MenuDotsLine,
 } from "react-native-solar-icons/icons/outline";
 import { useUniwind } from "uniwind";
 
@@ -129,14 +129,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="more"
         options={{
-          title: "Settings",
+          title: "More",
           tabBarIcon: ({ color, size, focused }) =>
             focused ? (
-              <SettingsBold size={size} color={color} />
+              <MenuDotsBold size={size} color={color} />
             ) : (
-              <SettingsLine size={size} color={color} />
+              <MenuDotsLine size={size} color={color} />
             ),
           // headerShown: false,
         }}

@@ -1,7 +1,8 @@
 import { appTheme } from "@/src/constants/app-theme";
+import { useWatchlistStore } from "@/src/hooks/stores/watchlist-store";
 import { type IAnimeInfoResponse } from "@/src/services/api/detail";
 import { Button } from "heroui-native";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { Text, View } from "react-native";
 import { Bookmark, Play } from "react-native-solar-icons/icons/bold";
 import {
@@ -11,17 +12,37 @@ import { useUniwind } from "uniwind";
 
 type Props = {
   animeDetail: IAnimeInfoResponse;
-  bookmarked: boolean;
-  onToggleBookmark: () => void;
+  session: string;
+  latestEpisode: number;
   onPlay: () => void;
 };
 
 export function DetailInfo({
   animeDetail,
-  bookmarked,
-  onToggleBookmark,
+  session,
+  latestEpisode,
   onPlay,
 }: Props) {
+  const bookmarked = useWatchlistStore((s) =>
+    s.items.some((i) => i.session === session),
+  );
+  const toggle = useWatchlistStore((s) => s.toggle);
+
+  const watchlistPayload = useMemo(
+    () => ({
+      session,
+      title: animeDetail.title,
+      poster: animeDetail.image,
+      status: animeDetail.status ?? "",
+      latestEpisode,
+    }),
+    [animeDetail, latestEpisode, session],
+  );
+
+  const onToggleBookmark = useCallback(() => {
+    toggle(watchlistPayload);
+  }, [toggle, watchlistPayload]);
+
   const { theme } = useUniwind();
   const isDark = theme === "dark";
   const iconColor = isDark

@@ -39,27 +39,28 @@ export function EpisodeGrid({
         {episodes.map((ep) => {
           const isActive = ep.number === currentEpisodeNumber;
           return (
-            <Button
-              key={ep.id}
-              onPress={() => onSelect(ep.session)}
-              variant="outline"
-              size="sm"
-              className={cn(
-                "rounded-lg",
-                isActive ? "bg-accent" : "bg-surface",
-              )}
-            >
-              <Text
+            <View key={ep.id} className="shrink-0 px-1" style={{ width: "18.2%" }}>
+              <Button
+                onPress={() => onSelect(ep.session)}
+                variant="outline"
+                size="md"
                 className={cn(
-                  "text-base tabular-nums",
-                  isActive
-                    ? "text-white font-semibold"
-                    : "text-foreground font-normal",
+                  "w-full rounded-lg",
+                  isActive ? "bg-accent" : "bg-surface",
                 )}
               >
-                {ep.number}
-              </Text>
-            </Button>
+                <Text
+                  className={cn(
+                    "text-base tabular-nums",
+                    isActive
+                      ? "text-white font-semibold"
+                      : "text-foreground font-normal",
+                  )}
+                >
+                  {ep.number}
+                </Text>
+              </Button>
+            </View>
           );
         })}
       </View>

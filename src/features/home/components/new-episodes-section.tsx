@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { FlatList, View } from "react-native";
-import { PortraitCard } from "./portrait-card";
+import { PortraitCard } from "../../../components/anime-card/portrait-card";
 import { SectionHeader } from "./section-header";
 
 export function NewEpisodesSection() {
