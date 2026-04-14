@@ -1,5 +1,4 @@
 import ErrorMessage from "@/src/components/error/error-message";
-import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { appTheme } from "@/src/constants/app-theme";
 import { useWatchlistStore } from "@/src/hooks/stores/watchlist-store";
 import { getOngoing, type IAiringData } from "@/src/services/api/ongoing";
@@ -7,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Button, Chip } from "heroui-native";
+import { Button, Chip, Skeleton } from "heroui-native";
 import React, {
   useCallback,
   useEffect,
@@ -143,7 +142,21 @@ export function HeroBanner() {
   }
 
   if (isLoading || items.length === 0) {
-    return <LoadingSpinner size="lg" height={300} />;
+    return (
+      <View>
+        <View className="px-0">
+          <Skeleton className="w-full h-[300px] rounded-none" />
+        </View>
+        <View className="flex-row justify-center items-center gap-1.5 mt-3 p-5">
+          {Array.from({ length: BANNER_COUNT }).map((_, index) => (
+            <Skeleton
+              key={`hero-skeleton-dot-${index}`}
+              className={index === 0 ? "w-[18px] h-[6px] rounded-full" : "w-[6px] h-[6px] rounded-full"}
+            />
+          ))}
+        </View>
+      </View>
+    );
   }
 
   return (

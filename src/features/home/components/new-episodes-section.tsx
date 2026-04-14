@@ -1,8 +1,8 @@
 import ErrorMessage from "@/src/components/error/error-message";
-import LoadingSpinner from "@/src/components/loading/loading-spinner";
 import { getOngoing, type IAiringData } from "@/src/services/api/ongoing";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
+import { Skeleton } from "heroui-native";
 import React from "react";
 import { FlatList, View } from "react-native";
 import { PortraitCard } from "../../../components/anime-card/portrait-card";
@@ -15,6 +15,7 @@ export function NewEpisodesSection() {
   });
 
   const items = data?.data ?? [];
+  const skeletonItems = Array.from({ length: 6 }, (_, index) => index);
 
 
 
@@ -30,7 +31,30 @@ export function NewEpisodesSection() {
         </View>
       )}
       {isLoading ? (
-        <LoadingSpinner size="lg" />
+        <FlatList<number>
+          data={skeletonItems}
+          keyExtractor={(item) => `new-episodes-skeleton-${item}`}
+          renderItem={({ item, index }) => (
+            <View style={{ width: 118, marginRight: index === skeletonItems.length - 1 ? 0 : 12 }}>
+              <Skeleton className="rounded-xl" style={{ width: 118, height: 160 }} />
+              <Skeleton
+                className="rounded-full mt-2"
+                style={{ width: 80, height: 8 }}
+              />
+              <Skeleton
+                className="rounded-full"
+                style={{ width: 118, height: 12, marginTop: 7 }}
+              />
+              <Skeleton
+                className="rounded-full"
+                style={{ width: 94, height: 12, marginTop: 5 }}
+              />
+            </View>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 4 }}
+        />
       ) : (
         <FlatList<IAiringData>
           data={items}
