@@ -28,7 +28,7 @@ export function QualitySwitcher({
               variant="outline"
               size="sm"
               className={cn(
-                "rounded-full",
+                "rounded-lg",
                 isActive ? "bg-accent" : "bg-surface",
               )}
             >

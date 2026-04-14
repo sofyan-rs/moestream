@@ -2,8 +2,8 @@ import { appTheme } from "@/src/constants/app-theme";
 import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
 import { HistoryItemCard } from "@/src/features/history/components/history-item-card";
 import {
+  selectContinueWatchingList as selectLatestWatchPerSeries,
   useHistoryStore,
-  type IHistoryData,
 } from "@/src/hooks/stores/history-store";
 import { PressableFeedback } from "heroui-native";
 import { useRouter } from "expo-router";
@@ -12,12 +12,6 @@ import { FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft, History } from "react-native-solar-icons/icons/outline";
 import { useUniwind } from "uniwind";
-
-function sortByDateDesc(a: IHistoryData, b: IHistoryData) {
-  return (
-    new Date(b.lastWatchedAt).getTime() - new Date(a.lastWatchedAt).getTime()
-  );
-}
 
 export default function HistoryScreen() {
   const { top } = useSafeAreaInsets();
@@ -34,7 +28,10 @@ export default function HistoryScreen() {
     ? appTheme.colors.dark.primary
     : appTheme.colors.light.primary;
 
-  const sorted = useMemo(() => [...watches].sort(sortByDateDesc), [watches]);
+  const rows = useMemo(
+    () => selectLatestWatchPerSeries(watches),
+    [watches],
+  );
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: top }}>
@@ -45,8 +42,8 @@ export default function HistoryScreen() {
         <Text className="text-lg font-semibold text-foreground">History</Text>
       </View>
       <FlatList
-        data={sorted}
-        keyExtractor={(item) => `${item.session}-${item.episodeId}`}
+        data={rows}
+        keyExtractor={(item) => item.session}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         contentContainerStyle={{
           paddingHorizontal: 16,

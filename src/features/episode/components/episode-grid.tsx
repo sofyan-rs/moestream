@@ -1,9 +1,7 @@
-import { appTheme } from "@/src/constants/app-theme";
 import { type TEpisodeRelease } from "@/src/services/api/episode";
 import { Button, PressableFeedback } from "heroui-native";
 import { Text, View } from "react-native";
 import { CheckCircle } from "react-native-solar-icons/icons/bold";
-import { useUniwind } from "uniwind";
 import { cn } from "tailwind-variants";
 
 type Props = {
@@ -26,15 +24,12 @@ export function EpisodeGrid({
   hasMorePages = false,
   onSeeAll,
 }: Props) {
-  const { theme } = useUniwind();
-  const checkColor =
-    theme === "dark"
-      ? appTheme.colors.dark.primary
-      : appTheme.colors.light.primary;
+  // Green color for the check icon
+  const checkColor = '#2BA075';
 
   return (
     <View className="p-5">
-      <View className="flex-row items-center justify-between mb-3">
+      <View className="flex-row items-center justify-between mb-5">
         <Text className="text-foreground text-base font-bold">Episodes</Text>
         <View className="flex-row items-center gap-3">
           <Text className="font-normal text-xs text-foreground">
@@ -76,10 +71,11 @@ export function EpisodeGrid({
                 </Button>
                 {isWatched ? (
                   <View
-                    className="absolute -bottom-0.5 -right-0.5 rounded-full bg-surface"
+                    className="absolute rounded-full bg-surface"
                     pointerEvents="none"
+                    style={{ top: -2, right: -2 }}
                   >
-                    <CheckCircle size={14} color={checkColor} />
+                    <CheckCircle size={18} color={checkColor} />
                   </View>
                 ) : null}
               </View>

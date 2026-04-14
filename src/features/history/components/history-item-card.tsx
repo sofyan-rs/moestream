@@ -1,7 +1,8 @@
 import { appTheme } from "@/src/constants/app-theme";
 import type { IHistoryData } from "@/src/hooks/stores/history-store";
 import { Image } from "expo-image";
-import { Button } from "heroui-native";
+import { useRouter } from "expo-router";
+import { Button, PressableFeedback } from "heroui-native";
 import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 import { TrashBinMinimalistic, Tv } from "react-native-solar-icons/icons/outline";
@@ -51,6 +52,7 @@ type Props = {
 };
 
 export function HistoryItemCard({ item, onContinue, onDelete }: Props) {
+  const router = useRouter();
   const { theme } = useUniwind();
   const isDark = theme === "dark";
   const colors = isDark ? appTheme.colors.dark : appTheme.colors.light;
@@ -71,8 +73,13 @@ export function HistoryItemCard({ item, onContinue, onDelete }: Props) {
 
   return (
     <View className="flex-row rounded-2xl bg-surface overflow-hidden p-3 gap-3">
-      {/* Poster + bottom progress */}
-      <View className="rounded-xl overflow-hidden bg-background shrink-0">
+      {/* Poster + bottom progress — tap opens anime detail */}
+      <PressableFeedback
+        className="rounded-xl overflow-hidden bg-background shrink-0"
+        onPress={() => router.push(`/anime/${item.session}`)}
+        accessibilityRole="button"
+        accessibilityLabel={`Open ${item.title} details`}
+      >
         <View style={{ width: POSTER_W, height: POSTER_H }}>
           {item.poster ? (
             <Image
@@ -99,10 +106,12 @@ export function HistoryItemCard({ item, onContinue, onDelete }: Props) {
             />
           </View>
         </View>
-      </View>
+        <PressableFeedback.Highlight />
+        <PressableFeedback.Ripple />
+      </PressableFeedback>
 
       {/* Details */}
-      <View className="flex-1 min-w-0 py-2">
+      <View className="flex-1 min-w-0 justify-center py-2">
         <View className="gap-1.5">
           <Text
             className="text-foreground font-semibold text-sm leading-tight"
@@ -133,7 +142,7 @@ export function HistoryItemCard({ item, onContinue, onDelete }: Props) {
 
           <View className="flex-row flex-wrap items-center gap-2">
             <View
-              className="rounded-full px-2 py-0.5"
+              className="rounded-lg px-2 py-0.5"
               style={{ backgroundColor: colors.primaryLight }}
             >
               <Text className="text-xs font-bold" style={{ color: accent }}>

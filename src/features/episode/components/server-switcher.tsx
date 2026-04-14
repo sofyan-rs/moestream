@@ -1,7 +1,7 @@
+import { type TPlayableSource } from "@/src/services/api/episode";
 import { Button } from "heroui-native";
 import { ScrollView, Text, View } from "react-native";
 import { cn } from "tailwind-variants";
-import { type TPlayableSource } from "@/src/services/api/episode";
 
 type Props = {
   servers: readonly TPlayableSource[];
@@ -24,7 +24,7 @@ export function ServerSwitcher({ servers, selectedServerId, onSelect }: Props) {
                 variant="outline"
                 size="sm"
                 className={cn(
-                  "rounded-full",
+                  "rounded-lg",
                   isActive ? "bg-accent" : "bg-surface",
                 )}
               >
