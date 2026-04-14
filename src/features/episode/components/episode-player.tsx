@@ -266,6 +266,11 @@ function ControlsOverlay({
 
 // ── EpisodePlayer ────────────────────────────────────────────────────────────
 
+export type WatchProgressPayload = {
+  currentTime: number;
+  duration: number;
+};
+
 type Props = {
   sourceUrl: string;
   /** Stream `Referer` header (provider embed URL, e.g. kwik.cx player page) */
@@ -274,6 +279,9 @@ type Props = {
   safeAreaTop: number;
   accent: string;
   onBack: () => void;
+  /** Throttled while playing; also invoked when the stream changes or this player unmounts. */
+  onWatchProgress?: (payload: WatchProgressPayload) => void;
+  watchProgressIntervalMs?: number;
 };
 
 export function EpisodePlayer({
@@ -283,6 +291,8 @@ export function EpisodePlayer({
   safeAreaTop,
   accent,
   onBack,
+  onWatchProgress,
+  watchProgressIntervalMs = 5000,
 }: Props) {
   const inlineVideoRef = useRef<VideoRef>(null);
   const fullscreenVideoRef = useRef<VideoRef>(null);
@@ -295,6 +305,10 @@ export function EpisodePlayer({
   const durationRef = useRef(0);
   const isFullscreenRef = useRef(false);
   const seekFallbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressSnap = useRef({ currentTime: 0, duration: 0 });
+  const lastWatchEmitAt = useRef(0);
+  const onWatchProgressRef = useRef(onWatchProgress);
+  onWatchProgressRef.current = onWatchProgress;
 
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(true);
@@ -309,7 +323,38 @@ export function EpisodePlayer({
   const setDurationSynced = useCallback((d: number) => {
     durationRef.current = d;
     setDuration(d);
+    progressSnap.current = {
+      currentTime: progressSnap.current.currentTime,
+      duration: d,
+    };
   }, []);
+
+  const flushWatchProgress = useCallback(() => {
+    const cb = onWatchProgressRef.current;
+    if (!cb) return;
+    const { currentTime, duration } = progressSnap.current;
+    if (duration <= 0) return;
+    cb({ currentTime, duration });
+  }, []);
+
+  const maybeEmitWatchProgress = useCallback(() => {
+    const cb = onWatchProgressRef.current;
+    if (!cb) return;
+    const { currentTime, duration } = progressSnap.current;
+    if (duration <= 0) return;
+    const now = Date.now();
+    if (now - lastWatchEmitAt.current < watchProgressIntervalMs) return;
+    lastWatchEmitAt.current = now;
+    cb({ currentTime, duration });
+  }, [watchProgressIntervalMs]);
+
+  useEffect(() => {
+    progressSnap.current = { currentTime: 0, duration: 0 };
+    lastWatchEmitAt.current = 0;
+    return () => {
+      flushWatchProgress();
+    };
+  }, [sourceUrl, flushWatchProgress]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(false), 3500);
@@ -454,7 +499,14 @@ export function EpisodePlayer({
           resizeMode="contain"
           progressUpdateInterval={200}
           onProgress={({ currentTime: ct }) => {
-            if (!isFullscreen && !isSeekingRef.current) setCurrentTime(ct);
+            if (!isFullscreen && !isSeekingRef.current) {
+              setCurrentTime(ct);
+              progressSnap.current = {
+                currentTime: ct,
+                duration: durationRef.current,
+              };
+              maybeEmitWatchProgress();
+            }
           }}
           onLoad={({ duration: d }) => setDurationSynced(d)}
           onSeek={handleSeekComplete}
@@ -504,7 +556,14 @@ export function EpisodePlayer({
             resizeMode="contain"
             progressUpdateInterval={200}
             onProgress={({ currentTime: ct }) => {
-              if (!isSeekingRef.current) setCurrentTime(ct);
+              if (!isSeekingRef.current) {
+                setCurrentTime(ct);
+                progressSnap.current = {
+                  currentTime: ct,
+                  duration: durationRef.current,
+                };
+                maybeEmitWatchProgress();
+              }
             }}
             onLoad={({ duration: d }) => {
               setDurationSynced(d);

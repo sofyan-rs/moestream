@@ -15,6 +15,8 @@ type Props = {
     status?: string;
     episode?: string;
     timeAgo?: string;
+    /** Shown under the title (e.g. last watched episode). */
+    subtitle?: string;
   };
   showDetails?: boolean;
   showBadge?: boolean;
@@ -24,6 +26,8 @@ type Props = {
   coverTopLeft?: ReactNode;
   /** Rendered over the cover, top-right (e.g. remove action). */
   coverTopRight?: ReactNode;
+  /** Overrides default navigation to anime detail. */
+  onPress?: () => void;
 };
 
 export function PortraitCard({
@@ -33,6 +37,7 @@ export function PortraitCard({
   cardWidth,
   coverTopLeft,
   coverTopRight,
+  onPress: onPressOverride,
 }: Props) {
   const router = useRouter();
   const width = cardWidth ?? CARD_W;
@@ -43,18 +48,33 @@ export function PortraitCard({
         ? "Completed"
         : item.status;
 
+  const handlePress = () => {
+    if (onPressOverride) {
+      onPressOverride();
+      return;
+    }
+    router.push(`/anime/${item.id}`);
+  };
+
   return (
     <PressableFeedback
       style={{ width, marginRight: cardWidth != null ? 0 : 12 }}
-      onPress={() => router.push(`/anime/${item.id}`)}
+      onPress={handlePress}
     >
       {/* Poster */}
       <View className="rounded-xl overflow-hidden relative">
-        <Image
-          source={{ uri: item.cover }}
-          style={{ width, height: width * 1.42 }}
-          contentFit="cover"
-        />
+        {item.cover ? (
+          <Image
+            source={{ uri: item.cover }}
+            style={{ width, height: width * 1.42 }}
+            contentFit="cover"
+          />
+        ) : (
+          <View
+            className="bg-surface items-center justify-center"
+            style={{ width, height: width * 1.42 }}
+          />
+        )}
         {showBadge && (
           <View
             className="absolute bg-accent rounded-md overflow-hidden px-1.5 py-0.5"
@@ -114,6 +134,15 @@ export function PortraitCard({
       >
         {item.title}
       </Text>
+      {item.subtitle ? (
+        <Text
+          className="font-medium text-accent mt-0.5"
+          style={{ fontSize: 10 }}
+          numberOfLines={1}
+        >
+          {item.subtitle}
+        </Text>
+      ) : null}
     </PressableFeedback>
   );
 }

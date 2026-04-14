@@ -1,4 +1,5 @@
 import { appTheme } from "@/src/constants/app-theme";
+import { buildEpisodePlayerHref } from "@/src/features/episode/episode-path";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { PressableFeedback } from "heroui-native";
@@ -23,7 +24,14 @@ export function ContinueWatchingCard({ item }: Props) {
   return (
     <PressableFeedback
       style={{ width: CARD_W, marginRight: 12 }}
-      onPress={() => router.push(`/anime/${item.id}`)}
+      onPress={() =>
+        router.push(
+          buildEpisodePlayerHref(item.id, item.episodeSession, {
+            releasesPage: item.releasesPage,
+            sort: item.releasesSort,
+          }),
+        )
+      }
       className="rounded-xl overflow-hidden bg-surface"
     >
       {/* Thumbnail + play overlay */}

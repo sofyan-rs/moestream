@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ContinueWatchingSection } from "./components/continue-watching-section";
 import { PopularSection } from "./components/popular-section";
 
 export default function HomeScreen() {
@@ -35,7 +36,7 @@ export default function HomeScreen() {
     >
       <HomeHeader />
       <HeroBanner />
-      {/* <ContinueWatchingSection /> */}
+      <ContinueWatchingSection />
       <NewEpisodesSection />
       <PopularSection />
       <View className="h-12" />

@@ -5,10 +5,15 @@ import {
   getEpisodePlay,
   type TPlayableSource,
 } from "@/src/services/api/episode";
+import { getDetail } from "@/src/services/api/detail";
+import {
+  selectWatchedEpisodeSessions,
+  useHistoryStore,
+} from "@/src/hooks/stores/history-store";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { Button, Separator } from "heroui-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, StatusBar, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
@@ -57,6 +62,15 @@ export function EpisodeScreen({
       }),
     enabled: Boolean(animeId),
   });
+
+  const detailQuery = useQuery({
+    queryKey: ["detail", animeId],
+    queryFn: () => getDetail({ endpoint: animeId }),
+    enabled: Boolean(animeId),
+  });
+
+  const watches = useHistoryStore((s) => s.watches);
+  const recordWatch = useHistoryStore((s) => s.recordWatch);
 
   const currentEpisode = useMemo(
     () =>
@@ -130,6 +144,43 @@ export function EpisodeScreen({
     setSelectedServer(null);
   }, [episodeSession, selectedQuality]);
 
+  const watchedEpisodeSessions = useMemo(
+    () => selectWatchedEpisodeSessions(watches, animeId),
+    [watches, animeId],
+  );
+
+  const handleWatchProgress = useCallback(
+    (currentTime: number, duration: number) => {
+      if (!currentEpisode || !playQuery.data) return;
+      const totalDuration = duration;
+      const progress =
+        totalDuration > 0 ? currentTime / totalDuration : 0;
+      recordWatch({
+        session: animeId,
+        title: playQuery.data.title,
+        poster: detailQuery.data?.image ?? "",
+        episodeNumber: currentEpisode.number,
+        episodeId: episodeSession,
+        lastWatchedAt: new Date().toISOString(),
+        totalDuration,
+        currentDuration: currentTime,
+        progress,
+        releasesPage,
+        releasesSort,
+      });
+    },
+    [
+      animeId,
+      currentEpisode,
+      detailQuery.data?.image,
+      episodeSession,
+      playQuery.data,
+      recordWatch,
+      releasesPage,
+      releasesSort,
+    ],
+  );
+
   const navigateToEpisode = (epSession: string) => {
     router.replace(
       buildEpisodePlayerHref(animeId, epSession, {
@@ -166,12 +217,16 @@ export function EpisodeScreen({
       <StatusBar hidden />
 
       <EpisodePlayer
+        key={episodeSession}
         sourceUrl={selectedServerSafe.url}
         referer={selectedServerSafe.embed}
         selectedQuality={selectedQuality}
         safeAreaTop={top}
         accent={accent}
         onBack={() => router.back()}
+        onWatchProgress={({ currentTime, duration }) =>
+          handleWatchProgress(currentTime, duration)
+        }
       />
 
       <ScrollView
@@ -233,6 +288,7 @@ export function EpisodeScreen({
           }
           currentEpisodeNumber={currentEpisode.number}
           onSelect={navigateToEpisode}
+          watchedEpisodeSessions={watchedEpisodeSessions}
           hasMorePages={
             (releasesQuery.data?.paginationInfo.lastPage ?? 1) > 1
           }

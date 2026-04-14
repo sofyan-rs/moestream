@@ -1,9 +1,11 @@
 import { ListGroup, PressableFeedback, Separator, Switch } from "heroui-native";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { Uniwind, useUniwind } from "uniwind";
 
 export default function MoreScreen() {
+  const router = useRouter();
   const { theme } = useUniwind();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -14,9 +16,12 @@ export default function MoreScreen() {
   return (
     <ScrollView className="bg-background p-5">
       <ListGroup className="rounded-xl">
-        <PressableFeedback animation={false} onPress={() => { }}>
+        <PressableFeedback
+          animation={false}
+          onPress={() => router.push("/history-watch")}
+        >
           <PressableFeedback.Scale>
-            <ListGroup.Item disabled>
+            <ListGroup.Item>
               <ListGroup.ItemContent>
                 <ListGroup.ItemTitle>History</ListGroup.ItemTitle>
                 <ListGroup.ItemDescription>
