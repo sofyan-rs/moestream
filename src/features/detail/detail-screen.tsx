@@ -84,7 +84,7 @@ export function DetailScreen({ id }: Props) {
         className="flex-1 bg-background"
         showsVerticalScrollIndicator={false}
         bounces={false}
-        contentContainerStyle={{ paddingBottom: 12 }}
+        contentContainerStyle={{ paddingBottom: 24 }}
       >
         <DetailCover cover={detailData.image} onPlay={handlePlay} />
         <DetailInfo

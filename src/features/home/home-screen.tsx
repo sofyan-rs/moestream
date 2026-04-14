@@ -39,7 +39,7 @@ export default function HomeScreen() {
       <ContinueWatchingSection />
       <NewEpisodesSection />
       <PopularSection />
-      <View className="h-12" />
+      <View className="h-20" />
     </ScrollView>
   );
 }
