@@ -219,6 +219,8 @@ export function EpisodeScreen({
         key={episodeSession}
         sourceUrl={selectedServerSafe.url}
         referer={selectedServerSafe.embed}
+        title={playQuery.data.title}
+        subtitle={`Episode ${currentEpisode.number}`}
         selectedQuality={selectedQuality}
         safeAreaTop={top}
         accent={accent}

@@ -55,11 +55,18 @@
             "useExoplayerDash": false
           }
         }
-      ]
+      ],
+      "./plugins/with-android-abi-splits"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3d1809b5-7faf-4bf6-a04c-671165ceeed4"
+      }
     }
   }
 }

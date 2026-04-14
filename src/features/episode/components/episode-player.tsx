@@ -10,10 +10,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pause, Play } from "react-native-solar-icons/icons/bold";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Pause, Play, RewindBack, RewindForward } from "react-native-solar-icons/icons/bold";
 import {
   ArrowLeft,
   FullScreen,
+  LockKeyhole,
+  LockKeyholeUnlocked,
   QuitFullScreen,
   SmartphoneRotate2,
 } from "react-native-solar-icons/icons/outline";
@@ -41,14 +44,22 @@ type ControlsOverlayProps = {
   currentTime: number;
   duration: number;
   quality: string;
+  title?: string;
+  subtitle?: string;
   isFullscreen: boolean;
   isLandscape: boolean;
   safeAreaTop: number;
+  safeAreaBottom?: number;
+  safeAreaLeft?: number;
+  safeAreaRight?: number;
   accent: string;
   onBack: () => void;
   onTogglePlay: () => void;
   onToggleFullscreen: () => void;
   onToggleOrientation: () => void;
+  controlsLocked: boolean;
+  onToggleLock: () => void;
+  onSeekRelative: (deltaSeconds: number) => void;
   onSeekStart: (ratio: number) => void;
   onSeekMove: (ratio: number) => void;
   onSeekEnd: (ratio: number) => void;
@@ -59,14 +70,22 @@ function ControlsOverlay({
   currentTime,
   duration,
   quality,
+  title,
+  subtitle,
   isFullscreen,
   isLandscape,
   safeAreaTop,
+  safeAreaBottom = 0,
+  safeAreaLeft = 0,
+  safeAreaRight = 0,
   accent,
   onBack,
   onTogglePlay,
   onToggleFullscreen,
   onToggleOrientation,
+  controlsLocked,
+  onToggleLock,
+  onSeekRelative,
   onSeekStart,
   onSeekMove,
   onSeekEnd,
@@ -120,6 +139,42 @@ function ControlsOverlay({
       },
     }),
   ).current;
+  const isLockedFullscreen = isFullscreen && controlsLocked;
+
+  if (isLockedFullscreen) {
+    return (
+      <View
+        pointerEvents="box-none"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: 12,
+        }}
+      >
+        <View
+          className="flex-row items-center"
+          style={{
+            marginTop: "auto",
+            paddingLeft: Math.max(12, safeAreaLeft + 8),
+            paddingBottom: Math.max(20, safeAreaBottom + 10),
+          }}
+        >
+          <Button
+            onPress={onToggleLock}
+            className="w-10 h-10 shrink-0 rounded-full items-center justify-center border-0"
+            variant="outline"
+            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+            hitSlop={8}
+          >
+            <LockKeyholeUnlocked size={18} color="white" />
+          </Button>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -133,46 +188,89 @@ function ControlsOverlay({
         padding: isFullscreen ? 12 : 0,
       }}
     >
-      {/* Top row: back | quality (+ rotate in fullscreen) */}
-      <View
-        style={{ paddingHorizontal: 12, paddingTop: safeAreaTop + 8 }}
-        className="flex-row items-center justify-between"
-      >
-        <Button
-          onPress={onBack}
-          className="w-10 h-10 rounded-full items-center justify-center border-0"
-          variant="outline"
-          style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-          hitSlop={8}
+      {/* Top row */}
+      {isFullscreen ? (
+        <View
+          style={{
+            paddingLeft: Math.max(12, safeAreaLeft + 8),
+            paddingRight: Math.max(12, safeAreaRight + 8),
+            paddingTop: safeAreaTop + 8,
+          }}
+          className="flex-row items-center justify-between"
         >
-          <ArrowLeft size={24} color="white" />
-        </Button>
-
-        <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center min-w-0 flex-1">
+            <Button
+              onPress={onBack}
+              className="w-10 h-10 rounded-full items-center justify-center border-0"
+              variant="outline"
+              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              hitSlop={8}
+            >
+              <ArrowLeft size={24} color="white" />
+            </Button>
+            <View className="ml-2 min-w-0 flex-1">
+              <Text
+                className="text-white text-base font-semibold"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {title || "Now Playing"}
+              </Text>
+              <Text
+                className="text-white text-xs"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {subtitle || "Episode"}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
+            className="ml-2 rounded-lg px-2 py-1"
+          >
+            <Text className="text-white text-xs font-semibold">{quality}</Text>
+          </View>
+        </View>
+      ) : (
+        <View
+          style={{ paddingHorizontal: 12, paddingTop: 8 }}
+          className="flex-row items-center justify-between"
+        >
+          <Button
+            onPress={onBack}
+            className="w-10 h-10 rounded-full items-center justify-center border-0"
+            variant="outline"
+            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+            hitSlop={8}
+          >
+            <ArrowLeft size={24} color="white" />
+          </Button>
           <View
             style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
             className="rounded-lg px-2 py-1"
           >
             <Text className="text-white text-xs font-semibold">{quality}</Text>
           </View>
-
-          {/* Orientation toggle — fullscreen only */}
-          {isFullscreen && (
-            <Button
-              onPress={onToggleOrientation}
-              className="w-10 h-10 rounded-full items-center justify-center border-0"
-              variant="outline"
-              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-              hitSlop={8}
-            >
-              <SmartphoneRotate2 size={18} color="white" />
-            </Button>
-          )}
         </View>
-      </View>
+      )}
 
       {/* Center play / pause */}
-      <View className="flex-1 items-center justify-center">
+      <View
+        className="flex-1 flex-row items-center justify-center"
+        style={{ gap: isFullscreen ? 24 : 0 }}
+      >
+        {isFullscreen && (
+          <Button
+            onPress={() => onSeekRelative(-10)}
+            className="size-12 rounded-full items-center justify-center border-0"
+            variant="outline"
+            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+            hitSlop={8}
+          >
+            <RewindBack size={28} color="white" />
+          </Button>
+        )}
         <Button
           onPress={onTogglePlay}
           className="size-16 rounded-full items-center justify-center border-0"
@@ -186,13 +284,51 @@ function ControlsOverlay({
             <Pause size={28} color="white" />
           )}
         </Button>
+        {isFullscreen && (
+          <Button
+            onPress={() => onSeekRelative(10)}
+            className="size-12 rounded-full items-center justify-center border-0"
+            variant="outline"
+            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+            hitSlop={8}
+          >
+            <RewindForward size={28} color="white" />
+          </Button>
+        )}
       </View>
 
       {/* Bottom: one row — current | seek | duration | fullscreen */}
       <View
         className="flex-row items-center gap-2"
-        style={{ paddingHorizontal: 12, paddingBottom: isFullscreen ? 28 : 12 }}
+        style={{
+          paddingLeft: isFullscreen ? Math.max(12, safeAreaLeft + 8) : 12,
+          paddingRight: isFullscreen ? Math.max(12, safeAreaRight + 8) : 12,
+          paddingBottom: isFullscreen ? Math.max(20, safeAreaBottom + 10) : 12,
+        }}
       >
+        {isFullscreen && (
+          <View className="flex-row items-center gap-2" style={{ marginRight: 5 }}>
+            <Button
+              onPress={onToggleOrientation}
+              className="w-10 h-10 shrink-0 rounded-full items-center justify-center border-0"
+              variant="outline"
+              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              hitSlop={8}
+            >
+              <SmartphoneRotate2 size={18} color="white" />
+            </Button>
+            <Button
+              onPress={onToggleLock}
+              className="w-10 h-10 shrink-0 rounded-full items-center justify-center border-0"
+              variant="outline"
+              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              hitSlop={8}
+            >
+              <LockKeyhole size={18} color="white" />
+            </Button>
+          </View>
+        )}
+
         <Text
           className="text-white text-xs font-semibold tabular-nums shrink-0"
           style={{ minWidth: 40 }}
@@ -259,6 +395,7 @@ function ControlsOverlay({
             <FullScreen size={18} color="white" />
           )}
         </Button>
+
       </View>
     </View>
   );
@@ -275,6 +412,8 @@ type Props = {
   sourceUrl: string;
   /** Stream `Referer` header (provider embed URL, e.g. kwik.cx player page) */
   referer: string;
+  title?: string;
+  subtitle?: string;
   selectedQuality: string;
   safeAreaTop: number;
   accent: string;
@@ -287,6 +426,8 @@ type Props = {
 export function EpisodePlayer({
   sourceUrl,
   referer,
+  title,
+  subtitle,
   selectedQuality,
   safeAreaTop,
   accent,
@@ -294,6 +435,7 @@ export function EpisodePlayer({
   onWatchProgress,
   watchProgressIntervalMs = 5000,
 }: Props) {
+  const insets = useSafeAreaInsets();
   const inlineVideoRef = useRef<VideoRef>(null);
   const fullscreenVideoRef = useRef<VideoRef>(null);
   const controlsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -314,6 +456,7 @@ export function EpisodePlayer({
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
+  const [controlsLocked, setControlsLocked] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -421,6 +564,22 @@ export function EpisodePlayer({
     [showControlsTemporarily],
   );
 
+  const seekRelative = useCallback((deltaSeconds: number) => {
+    const dur = durationRef.current;
+    if (dur <= 0) return;
+    const target = Math.max(0, Math.min(currentTime + deltaSeconds, dur));
+    setCurrentTime(target);
+    if (isFullscreenRef.current) {
+      fullscreenVideoRef.current?.seek(target);
+    } else {
+      inlineVideoRef.current?.seek(target);
+    }
+    progressSnap.current = {
+      currentTime: target,
+      duration: dur,
+    };
+  }, [currentTime]);
+
   // Called by react-native-video when the seek operation actually completes.
   const handleSeekComplete = useCallback(() => {
     if (seekFallbackTimer.current) clearTimeout(seekFallbackTimer.current);
@@ -431,6 +590,7 @@ export function EpisodePlayer({
 
   const enterFullscreen = useCallback(() => {
     seekOnLoad.current = currentTime;
+    setControlsLocked(false);
     setIsFullscreen(true);
     showControlsTemporarily();
   }, [currentTime, showControlsTemporarily]);
@@ -440,6 +600,7 @@ export function EpisodePlayer({
       ScreenOrientation.OrientationLock.PORTRAIT_UP,
     );
     setIsLandscape(false);
+    setControlsLocked(false);
     inlineVideoRef.current?.seek(currentTime);
     setIsFullscreen(false);
     showControlsTemporarily();
@@ -472,10 +633,21 @@ export function EpisodePlayer({
     currentTime,
     duration,
     quality: selectedQuality,
+    title,
+    subtitle,
     isLandscape,
     accent,
     onTogglePlay: () => setPaused((p) => !p),
     onToggleOrientation: toggleOrientation,
+    controlsLocked,
+    onToggleLock: () => {
+      setControlsLocked((locked) => {
+        const next = !locked;
+        if (!next) showControlsTemporarily();
+        return next;
+      });
+    },
+    onSeekRelative: seekRelative,
     onSeekStart: handleSeekStart,
     onSeekMove: handleSeekMove,
     onSeekEnd: handleSeekEnd,
@@ -588,11 +760,14 @@ export function EpisodePlayer({
             onPress={handleVideoTap}
           />
 
-          {showControls && (
+          {(showControls || controlsLocked) && (
             <ControlsOverlay
               {...sharedControls}
               isFullscreen={true}
-              safeAreaTop={0}
+              safeAreaTop={Math.max(safeAreaTop, insets.top)}
+              safeAreaBottom={insets.bottom}
+              safeAreaLeft={insets.left}
+              safeAreaRight={insets.right}
               onBack={exitFullscreen}
               onToggleFullscreen={exitFullscreen}
             />
