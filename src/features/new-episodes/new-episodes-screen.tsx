@@ -4,7 +4,7 @@ import { appTheme } from "@/src/constants/app-theme";
 import { getOngoing, type IAiringData } from "@/src/services/api/ongoing";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { PressableFeedback } from "heroui-native";
+import { PressableFeedback, Skeleton } from "heroui-native";
 import React, { useCallback } from "react";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -33,6 +33,7 @@ export default function NewEpisodesScreen() {
   });
 
   const items: IAiringData[] = data?.pages.flatMap((p) => p.data) ?? [];
+  const skeletonItems = Array.from({ length: 8 }, (_, index) => index);
 
   const onEndReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -57,7 +58,43 @@ export default function NewEpisodesScreen() {
         </View>
       )}
       {isLoading ? (
-        <LoadingSpinner size="lg" />
+        <FlatList<number>
+          data={skeletonItems}
+          keyExtractor={(item) => `new-episodes-list-skeleton-${item}`}
+          renderItem={({ index }) => (
+            <View className="flex-row px-5 py-3 gap-3">
+              <Skeleton
+                isLoading
+                className="rounded-xl"
+                style={{ width: 90, height: 125 }}
+              />
+              <View className="flex-1 justify-center">
+                <Skeleton
+                  isLoading
+                  className="rounded-full"
+                  style={{ width: "90%", height: 14 }}
+                />
+                <Skeleton
+                  isLoading
+                  className="rounded-full mt-2"
+                  style={{ width: 50, height: 10 }}
+                />
+                <Skeleton
+                  isLoading
+                  className="rounded-full mt-2"
+                  style={{ width: 100, height: 10 }}
+                />
+              </View>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 32 }}
+          ItemSeparatorComponent={({ leadingItem }) =>
+            leadingItem != null ? (
+              <View className="mx-5 border-b border-border opacity-50" />
+            ) : null
+          }
+        />
       ) : (
         <FlatList<IAiringData>
           data={items}
