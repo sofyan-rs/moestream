@@ -16,6 +16,7 @@ import { Stack, useRouter } from "expo-router";
 import { Button, Separator } from "heroui-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { EpisodeActions } from "./components/episode-actions";
@@ -252,18 +253,22 @@ export function EpisodeScreen({
             {showSourceControls ? "Hide server & quality" : "Server & quality"}
           </Button>
           {showSourceControls ? (
-            <>
-              <ServerSwitcher
-                servers={displaySources}
-                selectedServerId={selectedServerSafe.id}
-                onSelect={setSelectedServer}
-              />
-              <QualitySwitcher
-                qualities={availableQualities}
-                selectedQuality={selectedQuality}
-                onSelect={setSelectedQuality}
-              />
-            </>
+            <Animated.View
+              entering={FadeInUp.duration(150)}
+            >
+              <View>
+                <ServerSwitcher
+                  servers={displaySources}
+                  selectedServerId={selectedServerSafe.id}
+                  onSelect={setSelectedServer}
+                />
+                <QualitySwitcher
+                  qualities={availableQualities}
+                  selectedQuality={selectedQuality}
+                  onSelect={setSelectedQuality}
+                />
+              </View>
+            </Animated.View>
           ) : null}
         </View>
 

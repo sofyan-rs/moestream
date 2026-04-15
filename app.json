@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "moestream",
+    "name": "Moestream",
     "slug": "moestream",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -50,9 +50,10 @@
         {
           "enableNotificationControls": true,
           "androidExtensions": {
+            "enableVideoCaching": true,
+            "useExoplayerHls": true,
             "useExoplayerRtsp": false,
             "useExoplayerSmoothStreaming": false,
-            "useExoplayerHls": false,
             "useExoplayerDash": false
           }
         }

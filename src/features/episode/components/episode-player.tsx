@@ -213,6 +213,11 @@ function ControlsOverlay({
                 className="text-white text-base font-semibold"
                 numberOfLines={1}
                 ellipsizeMode="tail"
+                style={{
+                  textShadowColor: "rgba(0,0,0,0.4)",
+                  textShadowOffset: { width: 1, height: 1 },
+                  textShadowRadius: 2,
+                }}
               >
                 {title || "Now Playing"}
               </Text>
@@ -220,6 +225,11 @@ function ControlsOverlay({
                 className="text-white text-xs"
                 numberOfLines={1}
                 ellipsizeMode="tail"
+                style={{
+                  textShadowColor: "rgba(0,0,0,0.4)",
+                  textShadowOffset: { width: 1, height: 1 },
+                  textShadowRadius: 2,
+                }}
               >
                 {subtitle || "Episode"}
               </Text>
@@ -331,7 +341,12 @@ function ControlsOverlay({
 
         <Text
           className="text-white text-xs font-semibold tabular-nums shrink-0"
-          style={{ minWidth: 40 }}
+          style={{
+            minWidth: 40,
+            textShadowColor: "rgba(0,0,0,0.4)",
+            textShadowOffset: { width: 1, height: 1 },
+            textShadowRadius: 2
+          }}
         >
           {formatTime(currentTime)}
         </Text>
@@ -378,7 +393,12 @@ function ControlsOverlay({
           </View>
         </View>
 
-        <Text className="text-white text-xs font-semibold tabular-nums shrink-0">
+        <Text className="text-white text-xs font-semibold tabular-nums shrink-0"
+          style={{
+            textShadowColor: "rgba(0,0,0,0.4)",
+            textShadowOffset: { width: 1, height: 1 },
+            textShadowRadius: 2,
+          }}>
           {formatTime(duration)}
         </Text>
 
@@ -655,6 +675,10 @@ export function EpisodePlayer({
 
   return (
     <>
+      <StatusBar
+        hidden={true}
+        backgroundColor="transparent"
+        translucent={true} />
       {/* ── Inline player ── */}
       <View
         style={{
@@ -719,7 +743,6 @@ export function EpisodePlayer({
         onRequestClose={exitFullscreen}
       >
         <View style={{ flex: 1, backgroundColor: "#000" }}>
-          <StatusBar hidden />
 
           <Video
             ref={fullscreenVideoRef}

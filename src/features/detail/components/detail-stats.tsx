@@ -35,22 +35,30 @@ export function DetailStats({ animeDetail }: Props) {
       ? "Ongoing"
       : animeDetail.status === "Finished Airing"
         ? "Completed"
-        : (animeDetail.status ?? "-");
+        : (animeDetail.status?.trim() ?? "");
 
   const details: { label: string; value: string }[] = [
-    { label: "Synonyms", value: animeDetail.synonym ?? "-" },
-    { label: "Japanese", value: animeDetail.japanese ?? "-" },
-    { label: "Type", value: animeDetail.type ?? "-" },
+    { label: "Synonyms", value: animeDetail.synonym?.trim() ?? "" },
+    { label: "Japanese", value: animeDetail.japanese?.trim() ?? "" },
+    { label: "Type", value: animeDetail.type?.trim() ?? "" },
     {
       label: "Episodes",
-      value: animeDetail.episodes === null ? "-" : String(animeDetail.episodes),
+      value:
+        animeDetail.episodes === null || animeDetail.episodes === undefined
+          ? ""
+          : String(animeDetail.episodes).trim(),
     },
     { label: "Status", value: normalizedStatus },
-    { label: "Duration", value: animeDetail.duration ?? "-" },
-    { label: "Aired", value: animeDetail.aired ?? "-" },
-    { label: "Season", value: animeDetail.season ?? "-" },
-    { label: "Studios", value: animeDetail.studio ?? "-" },
-    { label: "Themes", value: animeDetail.themes.join(", ") || "-" }
+    { label: "Duration", value: animeDetail.duration?.trim() ?? "" },
+    { label: "Aired", value: animeDetail.aired?.trim() ?? "" },
+    { label: "Season", value: animeDetail.season?.trim() ?? "" },
+    { label: "Studios", value: animeDetail.studio?.trim() ?? "" },
+    {
+      label: "Themes",
+      value: animeDetail.themes.length
+        ? animeDetail.themes.join(", ")
+        : "",
+    },
   ];
 
   return (
