@@ -29,6 +29,8 @@ export function SearchResultCard({ item }: Props) {
   const iconColor = isDark
     ? appTheme.colors.dark.text
     : appTheme.colors.light.text;
+  const backgroundColor = isDark ? appTheme.colors.dark.surface : appTheme.colors.light.surface;
+
   const label = statusLabel(item.status);
   const isOngoing = item.status === "Currently Airing";
   const rating =
@@ -50,7 +52,7 @@ export function SearchResultCard({ item }: Props) {
       {/* Thumbnail */}
       <View
         className="rounded-xl overflow-hidden"
-        style={{ width: THUMB_W, height: THUMB_H }}
+        style={{ width: THUMB_W, height: THUMB_H, backgroundColor: backgroundColor }}
       >
         <Image
           source={{ uri: item.poster }}

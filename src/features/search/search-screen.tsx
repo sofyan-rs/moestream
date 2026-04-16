@@ -88,7 +88,7 @@ export function SearchScreen() {
             </View>
           )}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 10 }}
+          contentContainerStyle={{ paddingBottom: 60 }}
           ItemSeparatorComponent={() => (
             <View className="mx-5 border-b border-border opacity-50" />
           )}
@@ -99,7 +99,7 @@ export function SearchScreen() {
           keyExtractor={(item) => item.session}
           renderItem={({ item }) => <SearchResultCard item={item} />}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 10 }}
+          contentContainerStyle={{ paddingBottom: 60 }}
           ItemSeparatorComponent={() => (
             <View className="mx-5 border-b border-border opacity-50" />
           )}

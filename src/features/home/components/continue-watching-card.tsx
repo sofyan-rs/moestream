@@ -20,6 +20,7 @@ export function ContinueWatchingCard({ item }: Props) {
   const { theme } = useUniwind();
   const isDark = theme === "dark";
   const colors = isDark ? appTheme.colors.dark : appTheme.colors.light;
+  const backgroundColor = isDark ? appTheme.colors.dark.background : appTheme.colors.light.background;
 
   return (
     <PressableFeedback
@@ -38,7 +39,7 @@ export function ContinueWatchingCard({ item }: Props) {
       <View>
         <Image
           source={{ uri: item.cover }}
-          style={{ width: CARD_W, height: CARD_W * 0.5625 }}
+          style={{ width: CARD_W, height: CARD_W * 0.5625, backgroundColor: backgroundColor }}
           contentFit="cover"
         />
         <View className="absolute top-3 right-3 rounded-full bg-black/55 items-center justify-center">

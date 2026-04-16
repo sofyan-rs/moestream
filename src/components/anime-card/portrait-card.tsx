@@ -1,8 +1,10 @@
+import { appTheme } from "@/src/constants/app-theme";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { PressableFeedback } from "heroui-native";
 import React, { type ReactNode } from "react";
 import { Text, View } from "react-native";
+import { useUniwind } from "uniwind";
 
 const CARD_W = 118;
 
@@ -41,6 +43,11 @@ export function PortraitCard({
 }: Props) {
   const router = useRouter();
   const width = cardWidth ?? CARD_W;
+
+  const { theme } = useUniwind();
+  const isDark = theme === "dark";
+  const backgroundColor = isDark ? appTheme.colors.dark.surface : appTheme.colors.light.surface;
+
   const normalizedStatus =
     item.status === "Currently Airing"
       ? "Ongoing"
@@ -66,7 +73,7 @@ export function PortraitCard({
         {item.cover ? (
           <Image
             source={{ uri: item.cover }}
-            style={{ width, height: width * 1.42 }}
+            style={{ width, height: width * 1.42, backgroundColor: backgroundColor }}
             contentFit="cover"
           />
         ) : (

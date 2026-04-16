@@ -1,7 +1,8 @@
+import { router } from "expo-router";
 import { Button } from "heroui-native";
 import React from "react";
 import { Text, View } from "react-native";
-import { Bell } from "react-native-solar-icons/icons/bold";
+import { Magnifer } from "react-native-solar-icons/icons/outline";
 import { useUniwind } from "uniwind";
 
 export function HomeHeader() {
@@ -18,8 +19,9 @@ export function HomeHeader() {
       <Button
         variant="outline"
         className="w-10 h-10 rounded-full bg-surface items-center justify-center border-surface border"
+        onPress={() => router.push("/search")}
       >
-        <Bell size={19} color={textColor} />
+        <Magnifer size={19} color={textColor} />
       </Button>
     </View>
   );

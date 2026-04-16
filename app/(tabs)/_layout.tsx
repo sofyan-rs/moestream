@@ -4,15 +4,15 @@ import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Bookmark as BookmarkBold,
+  History as HistoryBold,
   Home as HomeBold,
-  Magnifer as MagniferBold,
-  MenuDots as MenuDotsBold,
+  SettingsMinimalistic as SettingsMinimalisticBold
 } from "react-native-solar-icons/icons/bold-duotone";
 import {
   Bookmark as BookmarkLine,
+  History as HistoryLine,
   Home as HomeLine,
-  Magnifer as MagniferLine,
-  MenuDots as MenuDotsLine,
+  SettingsMinimalistic as SettingsMinimalisticLine
 } from "react-native-solar-icons/icons/outline";
 import { useUniwind } from "uniwind";
 
@@ -103,19 +103,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
-        options={{
-          title: "Search",
-          tabBarIcon: ({ color, size, focused }) =>
-            focused ? (
-              <MagniferBold size={size} color={color} />
-            ) : (
-              <MagniferLine size={size} color={color} />
-            ),
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
         name="watchlist"
         options={{
           title: "Watchlist",
@@ -125,20 +112,33 @@ export default function TabLayout() {
             ) : (
               <BookmarkLine size={size} color={color} />
             ),
-          // headerShown: false,
+          headerTitleAlign: "center",
+        }}
+      />
+      <Tabs.Screen
+        name="history-watch"
+        options={{
+          title: "History",
+          tabBarIcon: ({ color, size, focused }) =>
+            focused ? (
+              <HistoryBold size={size} color={color} />
+            ) : (
+              <HistoryLine size={size} color={color} />
+            ),
+          headerTitleAlign: "center",
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
-          title: "More",
+          title: "Settings",
           tabBarIcon: ({ color, size, focused }) =>
             focused ? (
-              <MenuDotsBold size={size} color={color} />
+              <SettingsMinimalisticBold size={size} color={color} />
             ) : (
-              <MenuDotsLine size={size} color={color} />
+              <SettingsMinimalisticLine size={size} color={color} />
             ),
-          // headerShown: false,
+          headerTitleAlign: "center",
         }}
       />
     </Tabs>

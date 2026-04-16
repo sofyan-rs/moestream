@@ -24,26 +24,6 @@ export default function MoreScreen() {
     <>
       <ScrollView className="bg-background p-5">
         <ListGroup className="rounded-xl">
-          <PressableFeedback
-            animation={false}
-            onPress={() => router.push("/history-watch")}
-          >
-            <PressableFeedback.Scale>
-              <ListGroup.Item>
-                <ListGroup.ItemContent>
-                  <ListGroup.ItemTitle>History</ListGroup.ItemTitle>
-                  <ListGroup.ItemDescription>
-                    View your watching history
-                  </ListGroup.ItemDescription>
-                </ListGroup.ItemContent>
-                <ListGroup.ItemSuffix />
-              </ListGroup.Item>
-            </PressableFeedback.Scale>
-            <PressableFeedback.Ripple />
-          </PressableFeedback>
-
-          <Separator className="mx-4" />
-
           <ListGroup.Item>
             {/* <ListGroup.ItemPrefix>
             {isDarkMode ? (

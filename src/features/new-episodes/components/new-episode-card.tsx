@@ -25,6 +25,7 @@ export function NewEpisodeCard({ item }: Props) {
   const iconColor = isDark
     ? appTheme.colors.dark.text
     : appTheme.colors.light.text;
+  const backgroundColor = isDark ? appTheme.colors.dark.surface : appTheme.colors.light.surface;
 
   return (
     <PressableFeedback
@@ -36,7 +37,7 @@ export function NewEpisodeCard({ item }: Props) {
       {/* Thumbnail */}
       <View
         className="rounded-xl overflow-hidden"
-        style={{ width: THUMB_W, height: THUMB_H }}
+        style={{ width: THUMB_W, height: THUMB_H, backgroundColor: backgroundColor }}
       >
         <Image
           source={{ uri: item.poster || item.image }}

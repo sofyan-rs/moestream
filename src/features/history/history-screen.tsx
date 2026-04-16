@@ -5,12 +5,11 @@ import {
   selectContinueWatchingList as selectLatestWatchPerSeries,
   useHistoryStore,
 } from "@/src/hooks/stores/history-store";
-import { PressableFeedback } from "heroui-native";
 import { useRouter } from "expo-router";
 import React, { useMemo } from "react";
 import { FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ArrowLeft, History } from "react-native-solar-icons/icons/outline";
+import { History } from "react-native-solar-icons/icons/outline";
 import { useUniwind } from "uniwind";
 
 export default function HistoryScreen() {
@@ -34,47 +33,40 @@ export default function HistoryScreen() {
   );
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      <View className="flex-row items-center gap-3 p-5 bg-surface">
-        <PressableFeedback onPress={() => router.back()} hitSlop={12}>
-          <ArrowLeft size={24} color={accent} />
-        </PressableFeedback>
-        <Text className="text-lg font-semibold text-foreground">History</Text>
-      </View>
-      <FlatList
-        data={rows}
-        keyExtractor={(item) => item.session}
-        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-        contentContainerStyle={{
-          paddingHorizontal: 16,
-          paddingTop: 12,
-          paddingBottom: 24,
-          flexGrow: 1,
-        }}
-        ListEmptyComponent={
-          <View className="flex-1 items-center justify-center gap-2 px-5 py-16">
-            <History size={48} color={placeholderColor} />
-            <Text className="text-foreground text-sm font-medium text-center">
-              Episodes you watch will appear here. Progress is saved on this
-              device.
-            </Text>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <HistoryItemCard
-            item={item}
-            onContinue={() =>
-              router.push(
-                buildEpisodePlayerHref(item.session, item.episodeId, {
-                  releasesPage: item.releasesPage,
-                  sort: item.releasesSort,
-                }),
-              )
-            }
-            onDelete={() => removeWatch(item.session, item.episodeId)}
-          />
-        )}
-      />
-    </View>
+    <FlatList
+      className="flex-1 bg-background"
+      data={rows}
+      keyExtractor={(item) => item.session}
+      ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+      contentContainerStyle={{
+        paddingHorizontal: 18,
+        paddingTop: 18,
+        paddingBottom: 24,
+        flexGrow: 1,
+      }}
+      ListEmptyComponent={
+        <View className="flex-1 items-center justify-center gap-2 px-5 py-16">
+          <History size={48} color={placeholderColor} />
+          <Text className="text-foreground text-sm font-medium text-center">
+            Episodes you watch will appear here. Progress is saved on this
+            device.
+          </Text>
+        </View>
+      }
+      renderItem={({ item }) => (
+        <HistoryItemCard
+          item={item}
+          onContinue={() =>
+            router.push(
+              buildEpisodePlayerHref(item.session, item.episodeId, {
+                releasesPage: item.releasesPage,
+                sort: item.releasesSort,
+              }),
+            )
+          }
+          onDelete={() => removeWatch(item.session, item.episodeId)}
+        />
+      )}
+    />
   );
 }

@@ -57,6 +57,7 @@ export function HistoryItemCard({ item, onContinue, onDelete }: Props) {
   const isDark = theme === "dark";
   const colors = isDark ? appTheme.colors.dark : appTheme.colors.light;
   const accent = colors.primary;
+  const backgroundColor = isDark ? appTheme.colors.dark.background : appTheme.colors.light.background;
 
   const pct = Math.round(item.progress * 100);
   const currentMin = formatMinutesPart(item.currentDuration);
@@ -80,7 +81,7 @@ export function HistoryItemCard({ item, onContinue, onDelete }: Props) {
         accessibilityRole="button"
         accessibilityLabel={`Open ${item.title} details`}
       >
-        <View style={{ width: POSTER_W, height: POSTER_H }}>
+        <View style={{ width: POSTER_W, height: POSTER_H, backgroundColor: backgroundColor }}>
           {item.poster ? (
             <Image
               source={{ uri: item.poster }}

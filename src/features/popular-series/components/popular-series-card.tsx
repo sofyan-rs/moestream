@@ -20,6 +20,8 @@ export function PopularSeriesCard({ item }: Props) {
   const { theme } = useUniwind();
   const isDark = theme === "dark";
   const iconColor = isDark ? appTheme.colors.dark.text : appTheme.colors.light.text;
+  const backgroundColor = isDark ? appTheme.colors.dark.surface : appTheme.colors.light.surface;
+
   const normalizedStatus =
     item.status === "Currently Airing"
       ? "Ongoing"
@@ -36,7 +38,7 @@ export function PopularSeriesCard({ item }: Props) {
       <PressableFeedback.Highlight />
       <PressableFeedback.Ripple />
 
-      <View className="rounded-xl overflow-hidden" style={{ width: THUMB_W, height: THUMB_H }}>
+      <View className="rounded-xl overflow-hidden" style={{ width: THUMB_W, height: THUMB_H, backgroundColor: backgroundColor }}>
         <Image
           source={{ uri: item.image }}
           style={{ width: THUMB_W, height: THUMB_H }}
