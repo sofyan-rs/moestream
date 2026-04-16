@@ -17,6 +17,7 @@ export type ContinueWatchingItem = {
   title: string;
   episode: string;
   progress: number;
+  currentDuration: number;
   cover: string;
 };
 
@@ -34,6 +35,7 @@ export function ContinueWatchingSection() {
         title: w.title,
         episode: `Episode ${w.episodeNumber}`,
         progress: w.progress,
+        currentDuration: w.currentDuration,
         cover: w.poster,
       })),
     [rows],

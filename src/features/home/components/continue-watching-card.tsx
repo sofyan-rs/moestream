@@ -30,6 +30,7 @@ export function ContinueWatchingCard({ item }: Props) {
           buildEpisodePlayerHref(item.id, item.episodeSession, {
             releasesPage: item.releasesPage,
             sort: item.releasesSort,
+            t: item.currentDuration,
           }),
         )
       }

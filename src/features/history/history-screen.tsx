@@ -61,6 +61,7 @@ export default function HistoryScreen() {
               buildEpisodePlayerHref(item.session, item.episodeId, {
                 releasesPage: item.releasesPage,
                 sort: item.releasesSort,
+                t: item.currentDuration,
               }),
             )
           }

@@ -35,6 +35,7 @@ type Props = {
   episodeSession: string;
   releasesPage: number;
   releasesSort: EpisodeReleasesSort;
+  startAtSeconds?: number;
 };
 
 export function EpisodeScreen({
@@ -42,6 +43,7 @@ export function EpisodeScreen({
   episodeSession,
   releasesPage,
   releasesSort,
+  startAtSeconds = 0,
 }: Props) {
   const router = useRouter();
   const { theme } = useUniwind();
@@ -224,6 +226,7 @@ export function EpisodeScreen({
         selectedQuality={selectedQuality}
         safeAreaTop={top}
         accent={accent}
+        startAtSeconds={startAtSeconds}
         onBack={() => router.back()}
         onWatchProgress={({ currentTime, duration }) =>
           handleWatchProgress(currentTime, duration)

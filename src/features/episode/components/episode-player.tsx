@@ -1,6 +1,6 @@
 import * as ScreenOrientation from "expo-screen-orientation";
 import { Button } from "heroui-native";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   Modal,
@@ -437,6 +437,8 @@ type Props = {
   selectedQuality: string;
   safeAreaTop: number;
   accent: string;
+  /** Initial playhead position (seconds) for resume playback. */
+  startAtSeconds?: number;
   onBack: () => void;
   /** Throttled while playing; also invoked when the stream changes or this player unmounts. */
   onWatchProgress?: (payload: WatchProgressPayload) => void;
@@ -451,6 +453,7 @@ export function EpisodePlayer({
   selectedQuality,
   safeAreaTop,
   accent,
+  startAtSeconds = 0,
   onBack,
   onWatchProgress,
   watchProgressIntervalMs = 5000,
@@ -461,6 +464,8 @@ export function EpisodePlayer({
   const controlsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Remembers the inline playhead position so fullscreen video can seek to it on load
   const seekOnLoad = useRef(0);
+  // Applied once per stream (sourceUrl). Used for resume playback.
+  const initialSeekDoneRef = useRef(false);
 
   // Refs that stay fresh without recreating seek callbacks
   const isSeekingRef = useRef(false);
@@ -514,6 +519,7 @@ export function EpisodePlayer({
   useEffect(() => {
     progressSnap.current = { currentTime: 0, duration: 0 };
     lastWatchEmitAt.current = 0;
+    initialSeekDoneRef.current = false;
     return () => {
       flushWatchProgress();
     };
@@ -648,6 +654,24 @@ export function EpisodePlayer({
     [sourceUrl, referer],
   );
 
+  const maybeApplyInitialSeek = useCallback(
+    (videoRef: RefObject<VideoRef | null>, durSeconds: number) => {
+      if (initialSeekDoneRef.current) return;
+      if (!Number.isFinite(startAtSeconds) || startAtSeconds <= 0) return;
+      if (!Number.isFinite(durSeconds) || durSeconds <= 0) return;
+      // Keep a small buffer from the end so we don't instantly finish the video.
+      const target = Math.max(0, Math.min(startAtSeconds, Math.max(0, durSeconds - 2)));
+      if (target <= 0) return;
+
+      initialSeekDoneRef.current = true;
+      setCurrentTime(target);
+      durationRef.current = durSeconds;
+      progressSnap.current = { currentTime: target, duration: durSeconds };
+      videoRef.current?.seek(target);
+    },
+    [startAtSeconds],
+  );
+
   const sharedControls = {
     paused,
     currentTime,
@@ -705,7 +729,10 @@ export function EpisodePlayer({
               maybeEmitWatchProgress();
             }
           }}
-          onLoad={({ duration: d }) => setDurationSynced(d)}
+          onLoad={({ duration: d }) => {
+            setDurationSynced(d);
+            maybeApplyInitialSeek(inlineVideoRef, d);
+          }}
           onSeek={handleSeekComplete}
           onEnd={() => setPaused(true)}
         />
@@ -763,6 +790,7 @@ export function EpisodePlayer({
             }}
             onLoad={({ duration: d }) => {
               setDurationSynced(d);
+              maybeApplyInitialSeek(fullscreenVideoRef, d);
               if (seekOnLoad.current > 0) {
                 fullscreenVideoRef.current?.seek(seekOnLoad.current);
                 seekOnLoad.current = 0;

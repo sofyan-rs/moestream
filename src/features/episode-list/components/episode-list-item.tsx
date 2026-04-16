@@ -1,3 +1,4 @@
+import { appTheme } from "@/src/constants/app-theme";
 import { type IEpisodeListItem } from "@/src/services/api/episode-list";
 import { Image } from "expo-image";
 import { PressableFeedback } from "heroui-native";
@@ -5,6 +6,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { Play } from "react-native-solar-icons/icons/bold";
 import { PlayCircle } from "react-native-solar-icons/icons/linear";
+import { useUniwind } from "uniwind";
 
 type Props = {
   item: IEpisodeListItem;
@@ -21,6 +23,10 @@ export function EpisodeListItem({
   thumbnailUri,
   onPress,
 }: Props) {
+  const { theme } = useUniwind();
+  const isDark = theme === "dark";
+  const backgroundColor = isDark ? appTheme.colors.dark.background : appTheme.colors.light.background;
+
   const displayNumber =
     item.episode === null ? String(index + 1) : String(item.episode);
 
@@ -31,7 +37,7 @@ export function EpisodeListItem({
     >
       <PressableFeedback.Highlight />
       <PressableFeedback.Ripple />
-      <View className="rounded-xl overflow-hidden" style={{ width: 100, height: 62 }}>
+      <View className="rounded-xl overflow-hidden" style={{ width: 100, height: 62, backgroundColor: backgroundColor }}>
         <Image
           source={{ uri: thumbnailUri ?? item.snapshot }}
           style={{ width: "100%", height: "100%" }}

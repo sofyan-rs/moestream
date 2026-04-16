@@ -14,12 +14,19 @@ function parseSort(value: unknown): EpisodeReleasesSort {
   return raw === "episode_asc" ? "episode_asc" : "episode_desc";
 }
 
+function parseStartAtSeconds(value: unknown): number {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const n = parseFloat(String(raw ?? "0"));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
 export default function EpisodePage() {
   const params = useLocalSearchParams<{
     id: string;
     episode: string;
     releasesPage?: string;
     sort?: string;
+    t?: string;
   }>();
 
   const animeId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -30,12 +37,17 @@ export default function EpisodePage() {
     ? params.releasesPage[0]
     : params.releasesPage;
   const sortParam = Array.isArray(params.sort) ? params.sort[0] : params.sort;
+  const startAtParam = Array.isArray(params.t) ? params.t[0] : params.t;
 
   const page = useMemo(
     () => parseReleasesPage(releasesPageParam),
     [releasesPageParam],
   );
   const releasesSort = useMemo(() => parseSort(sortParam), [sortParam]);
+  const startAtSeconds = useMemo(
+    () => parseStartAtSeconds(startAtParam),
+    [startAtParam],
+  );
 
   return (
     <EpisodeScreen
@@ -43,6 +55,7 @@ export default function EpisodePage() {
       episodeSession={episodeSession}
       releasesPage={page}
       releasesSort={releasesSort}
+      startAtSeconds={startAtSeconds}
     />
   );
 }
