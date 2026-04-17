@@ -2,6 +2,12 @@
 
 An [Expo](https://expo.dev) anime streaming client for Android and iOS. It uses [Expo Router](https://docs.expo.dev/router/introduction) for file-based navigation, loads catalog and playback metadata from a REST API, and keeps watch progress and lists on-device.
 
+## Screenshots
+
+![Screenshot 1](ss/ss-1.png)
+![Screenshot 2](ss/ss-2.png)
+![Screenshot 3](ss/ss-3.png)
+
 ## Requirements
 
 - Node.js (LTS recommended)
@@ -15,7 +21,7 @@ This app uses **[continuous native generation](https://docs.expo.dev/workflow/pr
 Generate native directories and install CocoaPods on iOS:
 
 ```bash
-bun install 
+bun install
 bunx expo prebuild
 ```
 
@@ -41,7 +47,6 @@ Then launch the app from the already-built dev client, or use `expo run:*` so th
 
 ## Scripts
 
-
 | Command              | Description                                           |
 | -------------------- | ----------------------------------------------------- |
 | `bun start`          | Start Metro (`expo start`)                            |
@@ -51,15 +56,14 @@ Then launch the app from the already-built dev client, or use `expo run:*` so th
 | `bun run lint`       | Run Expo ESLint                                       |
 | `bunx expo prebuild` | Generate or refresh `ios/` and `android/` from config |
 
-
 ## Configuration
 
 - **API base URL:** set in `[src/constants/api-url.ts](src/constants/api-url.ts)` (`ApiClient`). Point this at your backend before running the app.
 
 ## Architecture (overview)
 
-- `**app/`** — Routes and layouts (tabs, anime stacks, shared list screens such as history and new episodes).
-- `**src/features/`** — Screens and UI by area: home, detail, episode player, search, watchlist, history, and so on.
+- `**app/`\*\* — Routes and layouts (tabs, anime stacks, shared list screens such as history and new episodes).
+- `**src/features/`\*\* — Screens and UI by area: home, detail, episode player, search, watchlist, history, and so on.
 - `**src/hooks/stores/**` — [Zustand](https://github.com/pmndrs/zustand) stores persisted with [MMKV](https://github.com/mrousavy/react-native-mmkv) (for example watchlist and per-episode watch history).
 - `**src/services/api/**` — Axios API modules used with [TanStack Query](https://tanstack.com/query).
 
@@ -85,4 +89,3 @@ Then launch the app from the already-built dev client, or use `expo run:*` so th
 - [Expo documentation](https://docs.expo.dev/)
 - [Expo Prebuild](https://docs.expo.dev/workflow/prebuild/)
 - [Expo Router](https://docs.expo.dev/router/introduction/)
-
